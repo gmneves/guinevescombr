@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guilherme Neves — Especialista de Infraestrutura & Middleware</title>
+  <meta name="description" content="Portfólio e currículo de Guilherme Neves, especialista em Infraestrutura de TI e plataformas Middleware desde 2010. Linux, WebSphere, WebLogic, Kubernetes, automação e observabilidade.">
+  <meta property="og:title" content="Guilherme Neves — Infraestrutura & Middleware">
+  <meta property="og:description" content="Mais de 20 anos em Infraestrutura de TI, com foco em Middleware, automação e observabilidade.">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://www.guineves.com.br/">
+  <meta property="og:image" content="https://www.guineves.com.br/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.guineves.com.br/og-image.png">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.guineves.com.br/">
+  <link rel="alternate" type="application/atom+xml" title="guineves :: blog (RSS/Atom)" href="https://blog.guineves.com.br/feed.xml">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Guilherme Neves",
+    "jobTitle": "Especialista em Infraestrutura | Linux | SRE | Automação",
+    "url": "https://www.guineves.com.br/",
+    "image": "https://www.guineves.com.br/og-image.png",
+    "email": "mailto:gmneves@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Atibaia",
+      "addressRegion": "SP",
+      "addressCountry": "BR"
+    },
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Stefanini Brasil"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "FIAP"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/guimneves",
+      "https://blog.guineves.com.br",
+      "https://www.instagram.com/guineves/",
+      "https://500px.com/p/gmneves?view=photos",
+      "https://www.twitch.tv/guiiiiineves"
+    ]
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐧</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    (function() {
+      function getTheme() {
+        const match = document.cookie.match(/(^|;)\s*site_theme=([^;]+)/);
+        if (match) return match[2];
+        try { return localStorage.getItem('theme'); } catch(e) {}
+        return null;
+      }
+      if (getTheme() === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="nav" id="top">
+    <a href="#top" class="logo" id="nav-logo">[guineves <span class="accent">~</span>]#<span class="cursor">_</span></a>
+    <nav>
+      <a href="#whoami" id="nav-whoami">Sobre mim</a>
+      <a href="#skills" id="nav-skills">Competências</a>
+      <a href="#work" id="nav-work">Experiência</a>
+      <a href="#certs" id="nav-certs">Formação &amp; Certificações</a>
+      <a href="#contact" id="nav-contact">Contatos</a>
+      <a href="https://blog.guineves.com.br" id="nav-blog">Blog ↗</a>
+      <button type="button" class="theme-toggle" id="theme-btn" aria-label="Alternar tema">
+        <span class="theme-icon">☀️</span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text reveal">
+        <p class="prompt">root@guineves:~# <span id="typed"></span><span class="cursor">▋</span></p>
+        <h1>Guilherme <span class="grad">Neves</span></h1>
+        <p class="role">Especialista em Infraestrutura | Linux | SRE | Automação</p>
+        <p class="lead">Infraestrutura de TI desde 2000, com foco em plataformas Middleware desde 2010. Do open-source às grandes plataformas corporativas, sempre com um café ☕ por perto.</p>
+        <div class="hero-meta">
+          <span>📍 Atibaia, SP</span>
+          <span>🏢 Stefanini</span>
+          <span>🎓 FIAP</span>
+        </div>
+        <p class="print-contacts" aria-hidden="true">Atibaia, SP · gmneves@gmail.com · linkedin.com/in/guimneves · www.guineves.com.br</p>
+        <div class="cta">
+          <a class="btn primary" id="cta-linkedin" href="https://www.linkedin.com/in/guimneves" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a class="btn" id="cta-email" href="mailto:gmneves@gmail.com">gmneves@gmail.com</a>
+          <button type="button" class="btn" id="cta-print" onclick="window.print()">Baixar CV (PDF)</button>
+        </div>
+      </div>
+      <div class="terminal reveal" aria-label="Resumo em formato de terminal">
+        <div class="term-bar"><i></i><i></i><i></i><span>bash — guineves</span></div>
+        <pre><span class="c">$</span> cat /etc/guineves-release
+<span class="k">NAME</span>="Guilherme Neves"
+<span class="k">BORN</span>=1984 <span class="m"># paulistano</span>
+<span class="k">IT_SINCE</span>=2000
+<span class="k">MIDDLEWARE_SINCE</span>=2010
+<span class="k">LINUX_USER_SINCE</span>="13 anos de idade"
+<span class="k">LANGS</span>="pt-BR, en (profissional), es (básico)"
+<span class="k">MOTTO</span>="Don't worry, be happy"
+
+<span class="c">$</span> uptime
+ <span class="s" id="uptime">25+ anos em infraestrutura</span>, load average: ☕ ☕ ☕</pre>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats reveal">
+      <div><strong data-count="25">0</strong><span>+ anos em TI</span></div>
+      <div><strong data-count="15">0</strong><span>+ anos em Middleware</span></div>
+      <div><strong data-count="5">0</strong><span>empresas</span></div>
+      <div><strong data-count="50">0</strong><span>+ tecnologias</span></div>
+    </section>
+
+    <!-- WHOAMI -->
+    <section id="whoami" class="section">
+      <h2 class="reveal"><span class="hash">#</span> Sobre mim</h2>
+      <div class="about reveal">
+        <div class="card glass">
+          <p>Olá, meu nome é <strong>Guilherme Neves</strong> e é um prazer conhecê-lo!</p>
+          <p>Sou paulistano, nascido em 1984, e atuo na área de <strong>Infraestrutura de Tecnologia da Informação</strong> desde 2000. A partir de 2010 concentrei meu foco principalmente em <strong>plataformas de Middleware</strong>.</p>
+          <p>Desde a juventude, meu envolvimento com sistemas <strong>Linux</strong> moldou minha paixão por tecnologia e me levou a desenvolver competências avançadas em ferramentas, automações e práticas de otimização de ambientes críticos.</p>
+          <p>Hoje meu foco é entregar soluções robustas e escaláveis com containers, virtualização e nuvem. Minha experiência vai de grandes plataformas como Oracle Fusion Middleware e IBM WebSphere a soluções open-source como JBoss, Tomcat e nginx, além de automação e CI/CD (Jenkins, Ansible, Terraform, GitLab) e monitoração (Zabbix, Dynatrace, Grafana).</p>
+          <p>Uma das minhas habilidades distintivas é a <strong>facilidade de absorver conhecimento sobre novas tecnologias</strong> e buscar informações que me auxiliem na resolução de problemas e no desenvolvimento de soluções para as demandas diárias da Infraestrutura.</p>
+        </div>
+        <div class="card glass passions">
+          <h3>Paixões</h3>
+          <ul>
+            <li>☕ Uma boa xícara de café</li>
+            <li>👨‍💻 Aprender sobre novas tecnologias</li>
+            <li>📸 Fotografia</li>
+            <li>☕ Novamente, café</li>
+            <li>📐 Impressão 3D</li>
+            <li>👾 Video games <small>(sem ser mestre 💀)</small></li>
+            <li>📚 Obras de ficção</li>
+          </ul>
+          <blockquote>“Don’t worry, be happy” <cite>— Bobby McFerrin</cite></blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section">
+      <h2 class="reveal"><span class="hash">#</span> Competências Técnicas</h2>
+      <div class="skills">
+        <article class="skill glass reveal"><h3><span class="ico">🐧 </span>Linux | Unix</h3><p>Usuário desde os 13, administrando desde os 15.</p><ul><li>Red Hat</li><li>SUSE</li><li>Debian</li><li>Fedora</li><li>CentOS</li><li>Oracle Linux</li><li>IBM AIX</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">⚙️ </span>Middleware</h3><p>Desde 2010, de soluções open-source a grandes players.</p><ul><li>Oracle Fusion Middleware</li><li>WebLogic</li><li>SOA / OSB</li><li>WebCenter</li><li>IBM WebSphere</li><li>JBoss</li><li>Tomcat</li><li>GlassFish</li><li>Node.js</li><li>Spring Boot</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">🌐 </span>WebServer</h3><p>Sim, também são Middleware — afinal, o que não é?</p><ul><li>Apache HTTPD</li><li>nginx</li><li>IIS</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">📦 </span>Virtualização & Containers</h3><p>Otimizando o uso de recursos.</p><ul><li>Kubernetes</li><li>Docker</li><li>Docker Swarm</li><li>Podman</li><li>VMware ESXi</li><li>VirtualBox</li><li>Nutanix</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">🤖 </span>Automação & CI/CD</h3><p>Robôs, robôs, robôs.</p><ul><li>Ansible</li><li>Terraform</li><li>Jenkins</li><li>GitLab CI</li><li>Rundeck</li><li>Puppet</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">☁️ </span>Cloud</h3><p>Às vezes com a cabeça nas nuvens.</p><ul><li>AWS</li><li>Oracle Cloud Infrastructure</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">📈 </span>Monitoração</h3><p>O que os olhos não veem, o bolso sente.</p><ul><li>Zabbix</li><li>Grafana</li><li>Dynatrace</li><li>Elastic Stack</li><li>AppDynamics</li><li>Nagios</li><li>Oracle EM</li><li>Introscope</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">💻 </span>Linguagens</h3><p>O futuro é código.</p><ul><li>Shell Script</li><li>Python</li><li>PowerShell</li><li>Java</li><li>Batch</li><li>VBA / VBS</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">🪟 </span>Windows</h3><p>Aquele outro sistema do tio Bill.</p><ul><li>Windows Server</li><li>Active Directory</li><li>DNS</li><li>IIS / ASP.NET</li><li class="no-print">Campo minado 💣</li></ul></article>
+        <article class="skill glass reveal"><h3><span class="ico">📡 </span>Transferência de Arquivos</h3><p>Parece simples, mas há quem complique.</p><ul><li>IBM Sterling B2B</li><li>Connect:Direct</li><li>SFTP</li><li>VCX (Visa Clearing Exchange)</li><li>VISA Edit Package</li></ul></article>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section id="work" class="section">
+      <h2 class="reveal"><span class="hash">#</span> Experiência Profissional</h2>
+      <ol class="timeline">
+        <li class="reveal">
+          <div class="dot"></div>
+          <div class="job glass">
+            <div class="job-top">
+              <header><h3>Stefanini Brasil <small>· cliente Orbitall Payments</small></h3><span class="badge now">atual</span></header>
+              <p class="period">out/2019 – presente · São Paulo</p>
+            </div>
+            <p class="title"><strong>Especialista em Infraestrutura</strong> <span>mar/2022 – presente</span></p>
+            <ul>
+              <li>Liderança técnica do time de infraestrutura responsável pela Orbitall Payments</li>
+              <li>Análise de incidentes e problemas no ambiente core da empresa</li>
+              <li>Apoio na definição de arquitetura, soluções e esforço de novos projetos</li>
+              <li>Acompanhamento de segurança (scans, túneis VPN) e correção de vulnerabilidades para o PCI DSS</li>
+              <li>Migração do VISA Edit Package para o VCX (Visa Clearing Exchange)</li>
+              <li>Documentação e disseminação de procedimentos e conhecimento com a equipe</li>
+            </ul>
+            <p class="title"><strong>Analista Middleware Sênior</strong> <span>out/2019 – fev/2022</span></p>
+            <ul>
+              <li>Responsável pelo ambiente de Middleware da Orbitall</li>
+              <li>IBM WebSphere, Node.js, Apache HTTPD, Docker, Elastic Stack (ELK), Spring Boot, GitLab</li>
+              <li>IBM Sterling B2B / Control Center e VISA Edit Package</li>
+              <li>Scripts de automação e monitoração com Zabbix, Grafana e Dynatrace</li>
+            </ul>
+            <p class="award"><span class="ico">🏆 </span>Reconhecido como <strong>#TalentoStefanini2023</strong></p>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="dot"></div>
+          <div class="job glass">
+            <div class="job-top">
+              <header><h3>Accenture Brasil</h3></header>
+              <p class="period">abr/2018 – set/2019 · São Paulo</p>
+            </div>
+            <p class="title"><strong>Associate Manager</strong> <span>abr/2018 – set/2019</span></p>
+            <ul>
+              <li>Gestão de ambientes Middleware: Oracle WebLogic, SOA, OSB e ODI</li>
+              <li>Instalação e clonagem de ambientes; administração de artefatos</li>
+              <li>Automação de processos de operação e apoio em troubleshooting de aplicações</li>
+              <li>Projetos de migração para AWS e Oracle Cloud Infrastructure (OCI)</li>
+            </ul>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="dot"></div>
+          <div class="job glass">
+            <div class="job-top">
+              <header><h3>Nextel Brasil</h3></header>
+              <p class="period">jun/2013 – abr/2018 · São Paulo</p>
+            </div>
+            <p class="title"><strong>Especialista em TI</strong> <span>dez/2014 – abr/2018</span></p>
+            <p class="title"><strong>Analista em TI</strong> <span>jun/2013 – dez/2014</span></p>
+            <ul>
+              <li>Manutenção e disponibilidade de ambientes produtivos e não produtivos de aplicações Java em Oracle WebLogic Server e Oracle SOA Suite</li>
+              <li>Implantação de pacotes, aplicação de patches e análise de problemas em produção</li>
+              <li>Criação de ambientes não produtivos espelhados na produção e monitoração corporativa</li>
+            </ul>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="dot"></div>
+          <div class="job glass">
+            <div class="job-top">
+              <header><h3>Grupo Ultra</h3></header>
+              <p class="period">mai/2010 – jun/2013 · São Paulo</p>
+            </div>
+            <p class="title"><strong>Analista de Suporte — Arquitetura de Aplicações</strong> <span>mai/2010 – jun/2013</span></p>
+            <ul>
+              <li>Instalação e gestão de Oracle SOA Suite, WebCenter, OBIEE e ambientes WebLogic</li>
+              <li>Implementação do WebLogic na migração do JD Edwards (Ipiranga)</li>
+              <li>Infraestrutura para aplicações Web e Client/Server; deploys em homologação e produção</li>
+              <li>Diagnóstico e solução de problemas de aplicações relacionados à infraestrutura</li>
+            </ul>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="dot"></div>
+          <div class="job glass">
+            <div class="job-top">
+              <header><h3>FIAP</h3></header>
+              <p class="period">set/2000 – mai/2010 · São Paulo</p>
+            </div>
+            <p class="title"><strong>Analista de Suporte de TI</strong> <span>set/2000 – mai/2010</span></p>
+            <ul>
+              <li>Servidores de e-mail, web, bancos de dados (Oracle, MS SQL Server), firewall e filtro de conteúdo</li>
+              <li>Laboratórios com WebLogic, WebSphere, MQ Series, JBoss, MySQL, Postgres, Hyperion, SAP</li>
+              <li>Rede física e lógica (Cisco, Enterasys): cabeamento, segurança e disponibilidade</li>
+              <li>Backups, atualizações de segurança e análise de logs para corrigir vulnerabilidades</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- CERTS & EDUCATION -->
+    <section id="certs" class="section">
+      <h2 class="reveal"><span class="hash">#</span> Certificações &amp; Formação</h2>
+      <div class="certs">
+        <a class="cert glass reveal" id="cert-gitlab" href="https://cursos.alura.com.br/certificate/245a87ee-1cd7-4f7b-83ac-4683e655eb00" target="_blank" rel="noopener"><span>Alura · 2022</span><h3>GitLab CI e Docker: Pipeline de entrega contínua</h3><em>ver credencial ↗</em></a>
+        <a class="cert glass reveal" id="cert-ec2" href="https://cursos.alura.com.br/certificate/8eed94fd-2594-480d-b2b0-43a0ed22705e" target="_blank" rel="noopener"><span>Alura · 2022</span><h3>Deploy no Amazon EC2: Alta disponibilidade e escalabilidade</h3><em>ver credencial ↗</em></a>
+        <a class="cert glass reveal" id="cert-swarm" href="https://cursos.alura.com.br/certificate/92d0d25c-92bf-4341-bbdf-61eb7573510d" target="_blank" rel="noopener"><span>Alura · 2022</span><h3>Docker Swarm: Orquestrador de containers</h3><em>ver credencial ↗</em></a>
+        <a class="cert glass reveal" id="cert-terraform" href="https://cursos.alura.com.br/certificate/efda7989-e34b-4628-982b-2e6779c48c8e" target="_blank" rel="noopener"><span>Alura · 2022</span><h3>Terraform: Automatize a infraestrutura na nuvem</h3><em>ver credencial ↗</em></a>
+      </div>
+      <div class="courses glass reveal">
+        <h3>Cursos</h3>
+        <ul>
+          <li>DevSecOps <span>@ 4Linux</span></li>
+          <li>Segurança em servidores Linux <span>@ 4Linux</span></li>
+          <li>Análise e testes de segurança em redes <span>@ 4Linux</span></li>
+          <li>Oracle SOA Suite 11g: Administration <span>@ En-Sof</span></li>
+          <li>Oracle SOA Suite 11g: Essential Concepts <span>@ En-Sof</span></li>
+          <li>Oracle WebLogic 9/10 <span>@ En-Sof</span></li>
+        </ul>
+        <h3>Formação</h3>
+        <ul><li>FIAP — Bacharelado em Sistemas de Informação <span>2003 – 2006</span></li></ul>
+        <h3>Idiomas</h3>
+        <ul><li>Inglês <span>profissional</span></li><li>Espanhol <span>básico</span></li></ul>
+      </div>
+    </section>
+
+    <!-- RECOMMENDATIONS -->
+    <section id="recs" class="section">
+      <h2 class="reveal"><span class="hash">#</span> Recomendações</h2>
+      <div class="recs">
+        <figure class="glass reveal">
+          <blockquote>“Profissional extremamente capacitado tecnicamente e com excelente perfil para trabalhar em equipe e enfrentar desafios. Tem curva de aprendizado muito boa, sendo capaz de dominar com rapidez uma nova tecnologia. Em todos os projetos em que trabalhamos juntos, sua participação foi fundamental e agregou muito valor ao resultado final.”</blockquote>
+          <figcaption>— Michel S. B.</figcaption>
+        </figure>
+        <figure class="glass reveal">
+          <blockquote>“Ótimo profissional, com perfil ótimo para trabalhar em equipe. Responsável pela implementação do WebLogic no projeto de migração do JD Edwards na Ipiranga, apresentando bastante facilidade para encontrar soluções e melhorias ao ambiente.”</blockquote>
+          <figcaption>— Sergio B. O.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- BLOG POSTS -->
+    <section id="blog" class="section">
+      <div class="section-head reveal">
+        <h2><span class="hash">#</span> Últimos Posts do Blog</h2>
+        <a href="https://blog.guineves.com.br" class="more-link">ver todos em blog.guineves.com.br ↗</a>
+      </div>
+      <div class="blog-grid" id="latest-posts">
+        <a class="post-preview glass reveal" href="https://blog.guineves.com.br/ligando-comandos/">
+          <span class="post-date">30/10/2026 · ⏱️ 3 min · #linux #bash #conectores</span>
+          <h3>Ligando comandos: Redirecionadores e Pipes no Bash</h3>
+          <p>Domine o uso prático de redirecionadores e conectores no Bash: aprenda a trabalhar com &gt;, &gt;&gt;, |, &lt;, &lt;&lt;&lt; e &lt;&lt; para automatizar tarefas.</p>
+          <em>ler artigo →</em>
+        </a>
+        <a class="post-preview glass reveal" href="https://blog.guineves.com.br/conheca-o-super-xargs/">
+          <span class="post-date">29/10/2026 · ⏱️ 2 min · #linux #bash #xargs</span>
+          <h3>Conheça o super xargs!</h3>
+          <p>Funcionamento básico do comando xargs para transformar a saída padrão de um comando em argumentos para outro.</p>
+          <em>ler artigo →</em>
+        </a>
+        <a class="post-preview glass reveal" href="https://blog.guineves.com.br/como-testar-conexoes-sem-telnet/">
+          <span class="post-date">18/04/2022 · ⏱️ 2 min · #bash #rede #linux</span>
+          <h3>Como testar conexões sem telnet</h3>
+          <p>Uma alternativa nativa do Bash (/dev/tcp) para testar conexões de rede e portas entre dois pontos sem precisar de telnet, netcat e afins.</p>
+          <em>ler artigo →</em>
+        </a>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <h2 class="reveal"><span class="hash">#</span> Contatos</h2>
+      <div class="contacts reveal">
+        <a id="contact-blog" href="https://blog.guineves.com.br">📝 Blog</a>
+        <a id="contact-linkedin" href="https://www.linkedin.com/in/guimneves" target="_blank" rel="noopener">💼 LinkedIn</a>
+        <a id="contact-email" href="mailto:gmneves@gmail.com">✉️ E-mail</a>
+        <a id="contact-instagram" href="https://www.instagram.com/guineves/" target="_blank" rel="noopener">📷 Instagram</a>
+        <a id="contact-500px" href="https://500px.com/p/gmneves?view=photos" target="_blank" rel="noopener">🖼️ 500px</a>
+        <a id="contact-twitch" href="https://www.twitch.tv/guiiiiineves" target="_blank" rel="noopener">👾 Twitch</a>
+        <a id="contact-spotify" href="https://open.spotify.com/playlist/7sM0lQ7yP690vF8IKozxP3" target="_blank" rel="noopener">🎧 Spotify</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>[guineves ~]# exit <span class="m">— © <span id="year"></span> Guilherme Neves · hospedado no GitHub Pages</span></p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>window.goatcounter = { path: (p) => location.host + p };</script>
+  <script data-goatcounter="https://guineves.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

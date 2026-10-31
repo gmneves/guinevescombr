@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404: No such file or directory — Guilherme Neves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐧</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .err-wrap { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 1.8rem; padding: 3rem 0; }
+    .err-code { font-family: var(--mono); font-size: clamp(4rem, 12vw, 7rem); font-weight: 800; line-height: 1; }
+    .err-term { width: 100%; max-width: 680px; text-align: left; transform: none !important; }
+    .err-msg { color: #ff5f57; }
+  </style>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="nav" id="top">
+    <a href="/" class="logo">[guineves <span class="accent">~</span>]#<span class="cursor">_</span></a>
+    <nav>
+      <a href="/">Início</a>
+      <a href="https://blog.guineves.com.br">Blog ↗</a>
+      <a href="/#contact">Contatos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="err-wrap">
+      <div class="err-code"><span class="grad">404</span></div>
+      <div class="terminal err-term" aria-label="Erro 404 no terminal">
+        <div class="term-bar"><i></i><i></i><i></i><span>bash — exit code 1</span></div>
+        <pre><span class="c">root@guineves:~#</span> cd <span id="bad-path">/pagina</span>
+<span class="err-msg">bash: cd: <span id="bad-path-2">/pagina</span>: No such file or directory</span>
+
+<span class="c">root@guineves:~#</span> echo $?
+<span class="s">1</span>
+
+<span class="c">root@guineves:~#</span> <span class="m"># O caminho solicitado não existe. Que tal voltar para o ~ ?</span><span class="cursor">▋</span></pre>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="/">cd ~ (Ir para o Início)</a>
+        <a class="btn" href="https://blog.guineves.com.br">cd ~/blog (Ver Dicas)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>[guineves ~]# exit <span class="m">— © <span id="year"></span> Guilherme Neves · hospedado no GitHub Pages</span></p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const p = window.location.pathname || '/404';
+    document.getElementById('bad-path').textContent = p;
+    document.getElementById('bad-path-2').textContent = p;
+  </script>
+  <script>window.goatcounter = { path: (p) => '404/' + location.host + p };</script>
+  <script data-goatcounter="https://guineves.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
