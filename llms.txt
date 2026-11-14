@@ -1,0 +1,50 @@
+# guineves.com.br
+
+> Site pessoal de Guilherme Neves (Infraestrutura, Linux, Redes e Desenvolvimento) e **Canivete Suíço Offline** — coleção de 22 ferramentas utilitárias que rodam 100% no navegador (client-side), sem backend, sem anúncios e sem envio de dados.
+
+## Arquitetura & Uso por Agentes / LLMs
+
+- **Execução 100% local no navegador:** não há API HTTP/REST. Requisições simples (`curl`/`fetch`) retornam apenas o HTML e o JavaScript estáticos.
+- **Uso automatizado (Browser Agents / Playwright / Puppeteer):** acesse diretamente a URL com o hash da ferramenta (ex: `https://guineves.com.br/canivete/#grok`), interaja com os campos do painel ativo (`section.tool-panel.active`) e leia os resultados renderizados no DOM.
+- **Idioma:** Português do Brasil (`pt-BR`).
+
+## Páginas Principais
+
+- [Página Inicial](https://guineves.com.br/): Apresentação profissional, trajetória, projetos e links.
+- [Canivete Suíço Offline](https://guineves.com.br/canivete/): Suíte completa com 22 ferramentas para Infraestrutura, Linux, Redes, Dados e Segurança.
+- [Blog Técnico](https://blog.guineves.com.br/): Artigos técnicos sobre Linux, infraestrutura, observabilidade e desenvolvimento.
+- [Receitas do Gui](https://receitas.guineves.com.br/): Caderno de receitas caseiras com checklist interativa de ingredientes e [Conversor de Medidas Culinárias](https://receitas.guineves.com.br/conversor/).
+
+## Canivete Suíço — Ferramentas Disponíveis
+
+### Redes & Infraestrutura
+- [Calculadora de Sub-redes IP (IPv4 & IPv6)](https://guineves.com.br/canivete/#subnet): Calcula endereço de rede, broadcast, máscara decimal, wildcard, faixa de hosts utilizáveis, classe e notação CIDR para IPv4 e IPv6.
+- [Gerador de Regras de Firewall](https://guineves.com.br/canivete/#firewall): Gera regras prontas para `iptables`, `nftables`, `firewalld` e `ufw` a partir de porta, protocolo, origem e ação (`ACCEPT`, `DROP`, `REJECT`).
+- [Conversor de Permissões Linux (chmod)](https://guineves.com.br/canivete/#chmod): Converte entre notação octal (ex: `755`, `4755`) e simbólica (`rwxr-xr-x`), incluindo bits especiais (`SUID`, `SGID`, `Sticky Bit`).
+- [Calculador de Banda e Transferência](https://guineves.com.br/canivete/#bandwidth): Estima tempo de transferência e throughput entre velocidades de link (Mbps/Gbps) e tamanhos de arquivo (MB/GB/TB).
+
+### Terminal & Linux
+- [Gerador e Tradutor de Expressões Cron](https://guineves.com.br/canivete/#cron): Traduz expressões Cron para linguagem natural em português, valida sintaxe e lista as próximas execuções previstas.
+- [Construtor Interativo de find e xargs](https://guineves.com.br/canivete/#find-xargs): Monta comandos `find` (por nome, tipo, tamanho, mtime, profundidade) combinados com `-exec` ou `xargs` paralelo.
+- [Gerador de systemd Unit Files](https://guineves.com.br/canivete/#systemd): Gera arquivos `.service` e `.timer` com usuário, diretório de trabalho, `Restart`, limites e comandos `systemctl` associados.
+- [Construtor de Comandos tar e rsync](https://guineves.com.br/canivete/#tar-rsync): Gera comandos `tar` (gzip, bzip2, xz, zstd) e `rsync` (local ou via SSH, exclusões, dry-run, compressão e espelhamento).
+- [Construtor & Calculador de ACLs Linux (setfacl / getfacl)](https://guineves.com.br/canivete/#acl): Monta comandos `setfacl`/`getfacl`, calcula máscara efetiva (`mask`) POSIX, herança (`default:`) e importa saídas reais de `getfacl`.
+- [Gerador & Validador de Servidores Web (Nginx / Apache HTTPD)](https://guineves.com.br/canivete/#webserver): Gera blocos `server`/`VirtualHost` com proxy reverso, PHP-FPM, SSL/TLS, redirecionamento HTTPS, CORS, headers de segurança e validação de diretivas.
+
+### Dados & Formatação
+- [Visualizador e Editor Markdown Side-by-Side](https://guineves.com.br/canivete/#markdown): Editor Markdown (GFM) com pré-visualização lado a lado em tempo real, tabelas, blocos de código e checklists.
+- [Conversor e Validador JSON / YAML / TOML](https://guineves.com.br/canivete/#data-convert): Converte, valida sintaxe, formata (pretty-print) e minifica estruturas entre JSON, YAML e TOML.
+- [Codificador / Decodificador Multi-formato](https://guineves.com.br/canivete/#codec): Codifica e decodifica Base64, URL (percent-encoding), HTML Entities, Hexadecimal e Binário.
+- [Testador de Expressões Regulares (Regex)](https://guineves.com.br/canivete/#regex): Testa expressões regulares em tempo real com flags (`g`, `i`, `m`, `s`), destaque de matches, grupos de captura e substituição.
+- [Comparador de Texto / Diff Checker](https://guineves.com.br/canivete/#diff): Compara dois textos lado a lado ou em modo unificado destacando adições e remoções linha a linha.
+- [Testador & Construtor de Padrões Grok](https://guineves.com.br/canivete/#grok): Testa padrões Grok (Elasticsearch, Logstash, Vector, Loki), incluindo listas `match => [...]` multi-padrão com fallback, padrões customizados e saída em JSON ou tabela por linha.
+
+### Segurança & Criptografia
+- [Decodificador de JWT (JSON Web Token)](https://guineves.com.br/canivete/#jwt): Decodifica Header e Payload de tokens JWT localmente, exibindo claims, datas de emissão (`iat`) e expiração (`exp`).
+- [Gerador de Hashes (SHA & MD5)](https://guineves.com.br/canivete/#hashes): Calcula hashes MD5, SHA-1, SHA-256, SHA-384 e SHA-512 de textos e arquivos locais (via Web Crypto API) com comparador de checksum.
+- [Gerador de Senhas, Passphrases e Chaves Aleatórias](https://guineves.com.br/canivete/#passwords): Gera senhas seguras, passphrases (Diceware), UUIDs e chaves/tokens usando `crypto.getRandomValues`.
+- [Inspetor de Certificados X.509 (PEM)](https://guineves.com.br/canivete/#x509): Analisa certificados PEM localmente exibindo Subject, Issuer, validade, SANs, algoritmo e ordem de cadeia (RFC 5280).
+
+### Utilitários de Sistema
+- [Conversor de Timestamp (Epoch / Unix Time)](https://guineves.com.br/canivete/#timestamp): Converte timestamps Unix (segundos/milissegundos) para datas legíveis em UTC e horário local, e vice-versa.
+- [Conversor de Bases Numéricas e Unidades de Dados](https://guineves.com.br/canivete/#bases): Converte entre Decimal, Hexadecimal, Octal, Binário e ASCII, além de unidades de armazenamento SI (TB/GB) vs IEC (TiB/GiB).

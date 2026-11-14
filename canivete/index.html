@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canivete Suíço Offline — Ferramentas para Infra &amp; Dev · Guilherme Neves</title>
+  <meta name="description" content="Canivete Suíço 100% Offline e local para profissionais de Infraestrutura, Linux e Desenvolvimento. Sub-redes IP, Firewall, Chmod, Cron, Regex, JWT, Hashes, Systemd e muito mais.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://guineves.com.br/canivete/">
+
+  <meta property="og:title" content="Canivete Suíço Offline — Guilherme Neves">
+  <meta property="og:description" content="Ferramentas práticas de Infraestrutura, Linux e Redes rodando 100% no seu navegador sem envio de dados para servidores.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://guineves.com.br/canivete/">
+  <meta property="og:image" content="https://guineves.com.br/og-image.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- CSS Principal & Canivete -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="canivete.css">
+
+  <script>
+    (function() {
+      function getTheme() {
+        const match = document.cookie.match(/(^|;)\s*site_theme=([^;]+)/);
+        if (match) return match[2];
+        try { return localStorage.getItem('theme'); } catch(e) {}
+        return null;
+      }
+      if (getTheme() === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="canivete-header">
+    <div class="header-left">
+      <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Abrir menu de ferramentas">
+        ☰ Ferramentas
+      </button>
+      <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Recolher / expandir menu lateral (Atalho: Ctrl+B)" aria-label="Recolher ou expandir menu lateral">
+        <span class="sidebar-toggle-icon">◀</span>
+        <span class="sidebar-toggle-label">Menu</span>
+      </button>
+      <a href="/" class="logo">[guineves <span class="accent">~</span>]# canivete<span class="cursor">_</span></a>
+      <a href="/" class="back-home">← Voltar ao site</a>
+      <span class="offline-badge" title="Todas as operações ocorrem exclusivamente no seu navegador local. Zero chamadas de rede ou envio de dados.">
+        <span class="pulse-dot"></span> 100% Offline / Local
+      </span>
+      <button type="button" class="coffee-badge" id="pix-coffee-btn" title="Apoiar o projeto com um café via Pix">
+        <span class="coffee-icon">☕</span>
+        <span class="coffee-text">Pagar um café</span>
+      </button>
+    </div>
+    <div class="header-right">
+      <button type="button" class="theme-toggle" id="theme-btn" aria-label="Alternar tema dia/noite" title="Alternar tema">
+        <span class="theme-icon">☀️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- APP SHELL -->
+  <div class="app-container">
+    
+    <!-- SIDEBAR -->
+    <aside class="tools-sidebar" id="tools-sidebar">
+      
+      <!-- Search Input & Collapse Button -->
+      <div class="sidebar-search-row">
+        <div class="sidebar-search">
+          <input type="search" id="tool-search" placeholder="Buscar ferramenta..." autocomplete="off">
+          <span class="kbd-hint">/</span>
+        </div>
+        <button type="button" class="sidebar-collapse-icon-btn" id="sidebar-collapse-icon-btn" title="Recolher menu lateral (Ctrl+B)" aria-label="Recolher menu lateral">
+          «
+        </button>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="category-filters">
+        <button type="button" class="cat-pill active" data-cat="all">Todas</button>
+        <button type="button" class="cat-pill cat-pill-fav" data-cat="fav">⭐ Favoritos</button>
+        <button type="button" class="cat-pill" data-cat="net">Redes</button>
+        <button type="button" class="cat-pill" data-cat="linux">Linux</button>
+        <button type="button" class="cat-pill" data-cat="data">Dados</button>
+        <button type="button" class="cat-pill" data-cat="sec">Segurança</button>
+        <button type="button" class="cat-pill" data-cat="sys">Sistema</button>
+      </div>
+
+      <!-- Tools Navigation by Group -->
+      <nav class="sidebar-groups">
+
+        <!-- Sessão de Favoritos no Topo da Sidebar -->
+        <div class="category-group fav-group" id="fav-group" data-cat="fav">
+          <div class="category-title">
+            <span style="color:var(--amber);">⭐ Favoritos</span>
+            <span class="category-count" id="fav-count">0</span>
+          </div>
+          <div id="fav-list" class="fav-list">
+            <!-- Gerado dinamicamente via JS -->
+          </div>
+        </div>
+        
+        <!-- Categoria 1: Redes & Infra -->
+        <div class="category-group" data-cat="net">
+          <div class="category-title">
+            <span>🌐 Redes &amp; Infra</span>
+            <span class="category-count">4</span>
+          </div>
+          <button type="button" class="tool-nav-item active" data-tool="subnet" data-cat="net" data-keywords="subnet calculadora subrede ip ipv4 ipv6 cidr mascara broadcast host rede rfc1918">
+            <span class="tool-name">Sub-redes IP (v4/v6)</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="firewall" data-cat="net" data-keywords="firewall iptables nftables firewalld ufw regras portas drop accept reject">
+            <span class="tool-name">Regras de Firewall</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="chmod" data-cat="net" data-keywords="chmod permissoes linux octal simbolico suid sgid sticky bit rwx 755 644">
+            <span class="tool-name">Permissões chmod</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="bandwidth" data-cat="net" data-keywords="banda velocidade download upload transferencia mbps mb/s gb tempo calculo throughput">
+            <span class="tool-name">Banda &amp; Transferência</span>
+          </button>
+        </div>
+
+        <!-- Categoria 2: Terminal & Linux -->
+        <div class="category-group" data-cat="linux">
+          <div class="category-title">
+            <span>🐧 Terminal &amp; Linux</span>
+            <span class="category-count">6</span>
+          </div>
+          <button type="button" class="tool-nav-item" data-tool="cron" data-cat="linux" data-keywords="cron crontab agendamento execucoes tradutor cronjob proximo horario">
+            <span class="tool-name">Expressões Cron</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="find-xargs" data-cat="linux" data-keywords="find xargs busca arquivos comando terminal paralelo bash shell mtime size">
+            <span class="tool-name">Construtor find &amp; xargs</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="systemd" data-cat="linux" data-keywords="systemd unit service timer systemctl daemon servico linux background">
+            <span class="tool-name">systemd Unit Files</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="tar-rsync" data-cat="linux" data-keywords="tar rsync compactar backup sinc ssh gz bz2 xz sincronizar arquivos">
+            <span class="tool-name">Comandos tar &amp; rsync</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="acl" data-cat="linux" data-keywords="acl setfacl getfacl posix permissoes linux heranca default mask mascara rwx usuarios grupos chown chmod estendidas">
+            <span class="tool-name">Permissões ACL (setfacl)</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="webserver" data-cat="linux" data-keywords="webserver nginx apache httpd vhost server block proxy reverse proxy fpm php ssl tls certbot redirect https cors upstream location">
+            <span class="tool-name">Nginx &amp; Apache HTTPD</span>
+          </button>
+        </div>
+
+        <!-- Categoria 3: Dados & Formatação -->
+        <div class="category-group" data-cat="data">
+          <div class="category-title">
+            <span>📄 Dados &amp; Formatação</span>
+            <span class="category-count">6</span>
+          </div>
+          <button type="button" class="tool-nav-item" data-tool="markdown" data-cat="data" data-keywords="markdown md visualizador side-by-side preview editor texto formatacao previewer renderizador tabelas checklist gfm">
+            <span class="tool-name">Visualizador Markdown</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="data-convert" data-cat="data" data-keywords="json yaml toml conversor formatador validador pretty minify sintaxe">
+            <span class="tool-name">JSON / YAML / TOML</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="codec" data-cat="data" data-keywords="base64 url encode decode html entities hex binario codificador decodificador">
+            <span class="tool-name">Codificador Multi-formato</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="regex" data-cat="data" data-keywords="regex expressao regular teste match grupos replace expressao testador">
+            <span class="tool-name">Testador de Regex</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="diff" data-cat="data" data-keywords="diff checker comparador texto comparar diferencas side by side unified diferenca">
+            <span class="tool-name">Comparador Diff</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="grok" data-cat="data" data-keywords="grok elastic logstash vector loki pattern parser regex extrair logs timestamp apache syslog ingest pipeline">
+            <span class="tool-name">Testador de Padrões Grok</span>
+          </button>
+        </div>
+
+        <!-- Categoria 4: Segurança & Criptografia -->
+        <div class="category-group" data-cat="sec">
+          <div class="category-title">
+            <span>🔐 Segurança &amp; Cripto</span>
+            <span class="category-count">4</span>
+          </div>
+          <button type="button" class="tool-nav-item" data-tool="jwt" data-cat="sec" data-keywords="jwt json web token decodificador claims expiracao header payload assinatura">
+            <span class="tool-name">Decodificador JWT</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="hashes" data-cat="sec" data-keywords="hash md5 sha1 sha256 sha512 sha384 checksum integridade comparador">
+            <span class="tool-name">Gerador de Hashes</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="passwords" data-cat="sec" data-keywords="senha password passphrase diceware gerador token uuid chave aleatoria">
+            <span class="tool-name">Senhas &amp; Chaves</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="x509" data-cat="sec" data-keywords="x509 pem certificado ssl tls validade cert issuer subject san expiracao">
+            <span class="tool-name">Certificados X.509</span>
+          </button>
+        </div>
+
+        <!-- Categoria 5: Utilitários de Sistema -->
+        <div class="category-group" data-cat="sys">
+          <div class="category-title">
+            <span>💻 Utilitários de Sistema</span>
+            <span class="category-count">2</span>
+          </div>
+          <button type="button" class="tool-nav-item" data-tool="timestamp" data-cat="sys" data-keywords="timestamp epoch unix time data hora segundos utc conversor horario">
+            <span class="tool-name">Timestamp Epoch</span>
+          </button>
+          <button type="button" class="tool-nav-item" data-tool="bases" data-cat="sys" data-keywords="bases conversor decimal hexadecimal octal binario ascii dados si iec kb mib gb gib">
+            <span class="tool-name">Bases &amp; Unidades</span>
+          </button>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- MAIN TOOL STAGE -->
+    <main class="tool-stage">
+      
+      <!-- Barra de Favoritos no Topo da Área de Trabalho -->
+      <div class="stage-fav-bar" id="stage-fav-bar">
+        <div class="stage-fav-header">
+          <span class="stage-fav-icon">⭐</span>
+          <span class="stage-fav-title">Favoritos:</span>
+        </div>
+        <div class="stage-fav-chips" id="stage-fav-chips">
+          <!-- Gerado dinamicamente via JS -->
+        </div>
+      </div>
+      
+      <!-- ============================================================
+           TOOL 1: CALCULADORA DE SUB-REDES IP
+           ============================================================ -->
+      <section class="tool-panel active" id="panel-subnet">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Redes &amp; Infraestrutura</span><span class="sep">/</span><span>Sub-redes IP</span></div>
+          <div class="tool-title-row">
+            <h2>🖩 Calculadora de Sub-redes IP (IPv4 &amp; IPv6)</h2>
+          </div>
+          <p class="tool-desc">Cálculo instantâneo de blocos CIDR, máscaras de rede, primeiro/último host utilizável, broadcast, total de endereços, binários e categoria RFC.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / 3;">
+              <label class="form-label" for="subnet-input">
+                <span>Endereço IP e Prefixo CIDR:</span>
+                <span class="form-hint">Ex: 192.168.1.50/24 ou 2001:db8::1/64</span>
+              </label>
+              <input type="text" id="subnet-input" class="input-text" value="192.168.1.50/24" spellcheck="false">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subnet-mask-select">Máscara IPv4:</label>
+              <select id="subnet-mask-select" class="input-select">
+                <option value="32">/32 (255.255.255.255 - 1 Host)</option>
+                <option value="31">/31 (255.255.255.254 - 2 Hosts P2P)</option>
+                <option value="30">/30 (255.255.255.252 - 2 Hosts)</option>
+                <option value="29">/29 (255.255.255.248 - 6 Hosts)</option>
+                <option value="28">/28 (255.255.255.240 - 14 Hosts)</option>
+                <option value="27">/27 (255.255.255.224 - 30 Hosts)</option>
+                <option value="26">/26 (255.255.255.192 - 62 Hosts)</option>
+                <option value="25">/25 (255.255.255.128 - 126 Hosts)</option>
+                <option value="24" selected>/24 (255.255.255.0 - 254 Hosts)</option>
+                <option value="23">/23 (255.255.254.0 - 510 Hosts)</option>
+                <option value="22">/22 (255.255.252.0 - 1.022 Hosts)</option>
+                <option value="21">/21 (255.255.248.0 - 2.046 Hosts)</option>
+                <option value="20">/20 (255.255.240.0 - 4.094 Hosts)</option>
+                <option value="16">/16 (255.255.0.0 - 65.534 Hosts)</option>
+                <option value="8">/8 (255.0.0.0 - 16.777.214 Hosts)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="subnet-v4-card" class="card-box">
+          <div class="card-title">Detalhes da Sub-rede IPv4</div>
+          <div id="subnet-v4-results"></div>
+        </div>
+
+        <div id="subnet-v6-card" class="card-box" style="display:none;">
+          <div class="card-title">Detalhes da Sub-rede IPv6</div>
+          <div id="subnet-v6-results"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 2: GERADOR DE REGRAS DE FIREWALL
+           ============================================================ -->
+      <section class="tool-panel" id="panel-firewall">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Redes &amp; Infraestrutura</span><span class="sep">/</span><span>Regras de Firewall</span></div>
+          <div class="tool-title-row">
+            <h2>🛡️ Gerador de Regras de Firewall</h2>
+          </div>
+          <p class="tool-desc">Crie regras de firewall simultaneamente para <strong>iptables</strong>, <strong>nftables</strong>, <strong>firewalld</strong> e <strong>ufw</strong>.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="fw-action">Ação:</label>
+              <select id="fw-action" class="input-select">
+                <option value="ACCEPT" selected>ACCEPT (Permitir)</option>
+                <option value="DROP">DROP (Descartar silenciosamente)</option>
+                <option value="REJECT">REJECT (Rejeitar com aviso ICMP)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fw-chain">Direção (Chain):</label>
+              <select id="fw-chain" class="input-select">
+                <option value="INPUT" selected>INPUT (Entrada no host)</option>
+                <option value="OUTPUT">OUTPUT (Saída do host)</option>
+                <option value="FORWARD">FORWARD (Roteamento)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fw-proto">Protocolo:</label>
+              <select id="fw-proto" class="input-select">
+                <option value="tcp" selected>TCP</option>
+                <option value="udp">UDP</option>
+                <option value="icmp">ICMP</option>
+                <option value="all">Todos (Any)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fw-port">Porta(s) de Destino:</label>
+              <input type="text" id="fw-port" class="input-text" value="22" placeholder="Ex: 22 ou 80,443 ou 8000:8080">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fw-src">IP / Rede de Origem:</label>
+              <input type="text" id="fw-src" class="input-text" value="192.168.1.0/24" placeholder="Ex: 192.168.1.0/24 ou any">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fw-dst">IP / Rede de Destino (opcional):</label>
+              <input type="text" id="fw-dst" class="input-text" value="" placeholder="Ex: 10.0.0.5 ou em branco">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fw-iface">Interface de Rede:</label>
+              <input type="text" id="fw-iface" class="input-text" value="" placeholder="Ex: eth0, ens192">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fw-rate">Rate Limit (opcional):</label>
+              <input type="text" id="fw-rate" class="input-text" value="" placeholder="Ex: 10/minute">
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label" for="fw-comment">Comentário descritivo:</label>
+              <input type="text" id="fw-comment" class="input-text" value="SSH Admin Local" placeholder="Ex: Liberacao porta HTTP">
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="tool-subtabs">
+            <button type="button" class="subtab-btn active" data-tab="iptables">iptables</button>
+            <button type="button" class="subtab-btn" data-tab="nftables">nftables</button>
+            <button type="button" class="subtab-btn" data-tab="firewalld">firewall-cmd</button>
+            <button type="button" class="subtab-btn" data-tab="ufw">ufw</button>
+          </div>
+
+          <div class="subtab-content" data-tab-content="iptables">
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Sintaxe iptables</span>
+                <button type="button" class="copy-btn" data-copy-target="out-fw-iptables">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-fw-iptables"></pre>
+            </div>
+          </div>
+
+          <div class="subtab-content" data-tab-content="nftables" style="display:none;">
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Sintaxe nftables</span>
+                <button type="button" class="copy-btn" data-copy-target="out-fw-nftables">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-fw-nftables"></pre>
+            </div>
+          </div>
+
+          <div class="subtab-content" data-tab-content="firewalld" style="display:none;">
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Sintaxe firewall-cmd (RHEL / Rocky / Fedora)</span>
+                <button type="button" class="copy-btn" data-copy-target="out-fw-firewalld">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-fw-firewalld"></pre>
+            </div>
+          </div>
+
+          <div class="subtab-content" data-tab-content="ufw" style="display:none;">
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Sintaxe ufw (Ubuntu / Debian)</span>
+                <button type="button" class="copy-btn" data-copy-target="out-fw-ufw">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-fw-ufw"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 3: CONVERSOR DE PERMISSÕES LINUX (chmod)
+           ============================================================ -->
+      <section class="tool-panel" id="panel-chmod">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Redes &amp; Infraestrutura</span><span class="sep">/</span><span>Permissões chmod</span></div>
+          <div class="tool-title-row">
+            <h2>🔒 Conversor de Permissões Linux (chmod)</h2>
+          </div>
+          <p class="tool-desc">Conversão interativa bidirecional entre checkboxes visuais, notação octal (3 e 4 dígitos) e simbólica, incluindo bits especiais (SUID, SGID, Sticky Bit).</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="chmod-octal">Notação Octal:</label>
+              <input type="text" id="chmod-octal" class="input-text" value="0755" maxlength="4" style="font-size:1.1rem; font-weight:700;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="chmod-symbolic">Notação Simbólica:</label>
+              <input type="text" id="chmod-symbolic" class="input-text" value="rwxr-xr-x" maxlength="10" style="font-size:1.1rem; font-weight:700;">
+            </div>
+          </div>
+
+          <div class="preset-group">
+            <span class="preset-label">Atalhos rápidos:</span>
+            <button type="button" class="chip-btn" data-chmod-preset="0644">644 (Arquivos web)</button>
+            <button type="button" class="chip-btn" data-chmod-preset="0755">755 (Diretórios/Scripts)</button>
+            <button type="button" class="chip-btn" data-chmod-preset="0600">600 (Chave SSH privada)</button>
+            <button type="button" class="chip-btn" data-chmod-preset="0400">400 (Somente leitura dono)</button>
+            <button type="button" class="chip-btn" data-chmod-preset="1777">1777 (/tmp Sticky Bit)</button>
+            <button type="button" class="chip-btn" data-chmod-preset="0777">777 (Totalmente público)</button>
+          </div>
+
+          <!-- Matriz de Checkboxes -->
+          <div class="chmod-matrix">
+            <div class="chmod-header">Escopo</div>
+            <div class="chmod-header">Ler (r = 4)</div>
+            <div class="chmod-header">Gravar (w = 2)</div>
+            <div class="chmod-header">Executar (x = 1)</div>
+
+            <div class="chmod-row-label">Usuário / Dono (u)</div>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-ur" checked> r</label>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-uw" checked> w</label>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-ux" checked> x</label>
+
+            <div class="chmod-row-label">Grupo (g)</div>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-gr" checked> r</label>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-gw"> w</label>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-gx" checked> x</label>
+
+            <div class="chmod-row-label">Outros (o)</div>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-or" checked> r</label>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-ow"> w</label>
+            <label class="chmod-cell"><input type="checkbox" id="chmod-ox" checked> x</label>
+          </div>
+
+          <div style="margin-top:1.25rem;">
+            <div class="form-label" style="margin-bottom:0.4rem;">Bits Especiais (Avançado):</div>
+            <div class="checkbox-grid">
+              <label class="checkbox-label"><input type="checkbox" id="chmod-suid"> SUID (4000)</label>
+              <label class="checkbox-label"><input type="checkbox" id="chmod-sgid"> SGID (2000)</label>
+              <label class="checkbox-label"><input type="checkbox" id="chmod-sticky"> Sticky Bit (1000)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">📖 O que essas permissões significam?</div>
+          <div id="chmod-explanation" style="line-height:1.7; font-size:0.9rem; margin-bottom:1rem;"></div>
+          
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">Comandos chmod sugeridos</span>
+              <button type="button" class="copy-btn" data-copy-target="out-chmod-cmd">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-chmod-cmd"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 4: CALCULADOR DE BANDA E TRANSFERÊNCIA
+           ============================================================ -->
+      <section class="tool-panel" id="panel-bandwidth">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Redes &amp; Infraestrutura</span><span class="sep">/</span><span>Banda &amp; Transferência</span></div>
+          <div class="tool-title-row">
+            <h2>⚡ Calculador de Banda e Transferência</h2>
+          </div>
+          <p class="tool-desc">Calcule tempo estimado de transferência de arquivos em rede ou volume de dados trafegados considerando perda de overhead de protocolo.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="bw-size-val">Tamanho do Arquivo / Volume:</label>
+              <input type="number" id="bw-size-val" class="input-text" value="50" min="0" step="any">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bw-size-unit">Unidade do Arquivo:</label>
+              <select id="bw-size-unit" class="input-select">
+                <option value="MB">MegaBytes (MB)</option>
+                <option value="GB" selected>GigaBytes (GB)</option>
+                <option value="TB">TeraBytes (TB)</option>
+                <option value="MiB">MebiBytes (MiB)</option>
+                <option value="GiB">GibiBytes (GiB)</option>
+                <option value="TiB">TebiBytes (TiB)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bw-speed-val">Velocidade da Conexão / Link:</label>
+              <input type="number" id="bw-speed-val" class="input-text" value="300" min="0" step="any">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bw-speed-unit">Unidade de Velocidade:</label>
+              <select id="bw-speed-unit" class="input-select">
+                <option value="Mbps" selected>Megabits/s (Mbps)</option>
+                <option value="Gbps">Gigabits/s (Gbps)</option>
+                <option value="MBps">MegaBytes/s (MB/s)</option>
+                <option value="KBps">KiloBytes/s (KB/s)</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label" for="bw-overhead">Overhead de Rede / Perda estimada (%):</label>
+              <select id="bw-overhead" class="input-select">
+                <option value="0">0% (Teórico / Sem perda)</option>
+                <option value="5">5% (Overhead TCP/IP padrão)</option>
+                <option value="10" selected>10% (Típico em redes reais)</option>
+                <option value="20">20% (Conexões instáveis ou VPN/Wi-Fi)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">Resultado do Cálculo</div>
+          <div id="bw-time-result"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 5: GERADOR E TRADUTOR DE EXPRESSÕES CRON
+           ============================================================ -->
+      <section class="tool-panel" id="panel-cron">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Terminal &amp; Linux</span><span class="sep">/</span><span>Expressões Cron</span></div>
+          <div class="tool-title-row">
+            <h2>⏱️ Gerador e Tradutor de Expressões Cron</h2>
+          </div>
+          <p class="tool-desc">Construa e traduza expressões de agendamento cron em linguagem natural em português com cálculo em tempo real das próximas execuções.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label class="form-label" for="cron-input">Expressão Cron (5 campos):</label>
+            <input type="text" id="cron-input" class="input-text" value="*/15 8-18 * * 1-5" style="font-size:1.2rem; font-weight:700;">
+          </div>
+
+          <div class="preset-group">
+            <span class="preset-label">Atalhos rápidos:</span>
+            <button type="button" class="chip-btn" data-cron-preset="* * * * *">A cada minuto</button>
+            <button type="button" class="chip-btn" data-cron-preset="*/5 * * * *">A cada 5 min</button>
+            <button type="button" class="chip-btn" data-cron-preset="0 * * * *">A cada hora</button>
+            <button type="button" class="chip-btn" data-cron-preset="0 0 * * *">Todo dia à meia-noite</button>
+            <button type="button" class="chip-btn" data-cron-preset="0 9 * * 1-5">Dias úteis às 9h</button>
+            <button type="button" class="chip-btn" data-cron-preset="0 3 * * 0">Domingos às 3h</button>
+            <button type="button" class="chip-btn" data-cron-preset="0 0 1 * *">1º dia do mês</button>
+          </div>
+
+          <div class="form-grid" style="margin-top:1.25rem;">
+            <div class="form-group">
+              <label class="form-label" for="cron-f-min">Minuto (0-59):</label>
+              <input type="text" id="cron-f-min" class="input-text" value="*/15">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cron-f-hour">Hora (0-23):</label>
+              <input type="text" id="cron-f-hour" class="input-text" value="8-18">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cron-f-dom">Dia do Mês (1-31):</label>
+              <input type="text" id="cron-f-dom" class="input-text" value="*">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cron-f-month">Mês (1-12):</label>
+              <input type="text" id="cron-f-month" class="input-text" value="*">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cron-f-dow">Dia da Semana (0-6):</label>
+              <input type="text" id="cron-f-dow" class="input-text" value="1-5">
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div id="cron-translation" style="font-size:1.05rem; line-height:1.6; margin-bottom:1.25rem;"></div>
+
+          <div class="card-title">📅 Próximas 5 Execuções Previstas (Horário Local)</div>
+          <div id="cron-next-runs"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 6: CONSTRUTOR DE FIND E XARGS
+           ============================================================ -->
+      <section class="tool-panel" id="panel-find-xargs">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Terminal &amp; Linux</span><span class="sep">/</span><span>find &amp; xargs</span></div>
+          <div class="tool-title-row">
+            <h2>🔍 Construtor Interativo de find e xargs</h2>
+          </div>
+          <p class="tool-desc">Gere comandos de busca robustos com proteção contra nomes com espaços (<code>-print0 | xargs -0</code>) e execução paralela.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="preset-group" style="margin-bottom:1.25rem;">
+            <span class="preset-label">Casos comuns de uso:</span>
+            <button type="button" class="chip-btn" data-find-preset="old-logs">Apagar logs &gt; 30 dias</button>
+            <button type="button" class="chip-btn" data-find-preset="find-777">Localizar arquivos 777</button>
+            <button type="button" class="chip-btn" data-find-preset="grep-code">Grep em código com xargs</button>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="find-path">Diretório Inicial:</label>
+              <input type="text" id="find-path" class="input-text" value="/var/log">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="find-type">Tipo de Objeto:</label>
+              <select id="find-type" class="input-select">
+                <option value="f" selected>Arquivo regular (-type f)</option>
+                <option value="d">Diretório (-type d)</option>
+                <option value="l">Link simbólico (-type l)</option>
+                <option value="">Qualquer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="find-name">Padrão de Nome (-name):</label>
+              <input type="text" id="find-name" class="input-text" value="*.log" placeholder="Ex: *.log ou *.bak">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="find-time">Modificação há mais de X dias (-mtime):</label>
+              <input type="text" id="find-time" class="input-text" value="+30" placeholder="Ex: +30 (antigo), -7 (recente)">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="find-size">Tamanho (-size):</label>
+              <input type="text" id="find-size" class="input-text" value="" placeholder="Ex: +100M ou -10k">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="find-perm">Permissões (-perm):</label>
+              <input type="text" id="find-perm" class="input-text" value="" placeholder="Ex: 777">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="find-maxdepth">Profundidade Máxima:</label>
+              <input type="number" id="find-maxdepth" class="input-text" value="" placeholder="Ex: 2 ou em branco">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="find-action">Ação Direta do find (se sem xargs):</label>
+              <select id="find-action" class="input-select">
+                <option value="">Apenas listar caminhos</option>
+                <option value="-ls">Listagem detalhada (-ls)</option>
+                <option value="-delete">Apagar nativo (-delete)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--border);">
+            <label class="checkbox-label" style="font-weight:700; color:var(--cyan); margin-bottom:0.75rem;">
+              <input type="checkbox" id="find-use-xargs" checked> Canalizar para xargs (Pipeline seguro)
+            </label>
+
+            <div class="form-grid" style="margin-top:0.75rem;">
+              <div class="form-group">
+                <label class="form-label" for="xargs-cmd">Comando a Executar no xargs:</label>
+                <input type="text" id="xargs-cmd" class="input-text" value="rm -f" placeholder="Ex: rm -f ou grep -in 'erro'">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="xargs-parallel">Paralelismo (-P):</label>
+                <select id="xargs-parallel" class="input-select">
+                  <option value="1" selected>1 (Sequencial)</option>
+                  <option value="2">2 processos</option>
+                  <option value="4">4 processos</option>
+                  <option value="8">8 processos</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="output-box">
+          <div class="output-header">
+            <span class="output-title">Comando Shell Pronto</span>
+            <button type="button" class="copy-btn" data-copy-target="out-find-cmd">Copiar</button>
+          </div>
+          <pre class="output-pre" id="out-find-cmd"></pre>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 7: GERADOR DE SYSTEMD UNIT FILES
+           ============================================================ -->
+      <section class="tool-panel" id="panel-systemd">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Terminal &amp; Linux</span><span class="sep">/</span><span>systemd Unit Files</span></div>
+          <div class="tool-title-row">
+            <h2>⚙️ Gerador de systemd Unit Files (.service e .timer)</h2>
+          </div>
+          <p class="tool-desc">Crie arquivos de serviço e timer de systemd modernos com boas práticas de segurança (hardening) e comandos de inicialização.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="sys-unit-name">Nome do Serviço:</label>
+              <input type="text" id="sys-unit-name" class="input-text" value="meu-app">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sys-desc">Descrição:</label>
+              <input type="text" id="sys-desc" class="input-text" value="API Backend em Produção">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sys-user">Usuário de Execução:</label>
+              <input type="text" id="sys-user" class="input-text" value="www-data">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sys-group">Grupo:</label>
+              <input type="text" id="sys-group" class="input-text" value="www-data">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sys-workdir">Diretório de Trabalho:</label>
+              <input type="text" id="sys-workdir" class="input-text" value="/opt/meu-app">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sys-execstart">Comando de Início (ExecStart):</label>
+              <input type="text" id="sys-execstart" class="input-text" value="/usr/bin/node /opt/meu-app/server.js">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sys-type">Tipo de Serviço:</label>
+              <select id="sys-type" class="input-select">
+                <option value="simple" selected>simple</option>
+                <option value="exec">exec</option>
+                <option value="forking">forking</option>
+                <option value="oneshot">oneshot</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sys-restart">Política de Reinício:</label>
+              <select id="sys-restart" class="input-select">
+                <option value="always" selected>always (Sempre reiniciar)</option>
+                <option value="on-failure">on-failure (Reiniciar se falhar)</option>
+                <option value="no">no (Não reiniciar)</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label" for="sys-calendar">Agendamento do Timer (OnCalendar):</label>
+              <input type="text" id="sys-calendar" class="input-text" value="*-*-* 03:00:00" placeholder="Ex: daily ou *-*-* 03:00:00">
+            </div>
+            <div class="form-group full-width">
+              <label class="checkbox-label" style="font-weight:700; color:var(--green);">
+                <input type="checkbox" id="sys-harden" checked> Ativar Hardening de Segurança (NoNewPrivileges, ProtectSystem, PrivateTmp)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="tool-subtabs">
+            <button type="button" class="subtab-btn active" data-tab="sys-srv">.service</button>
+            <button type="button" class="subtab-btn" data-tab="sys-tmr">.timer</button>
+            <button type="button" class="subtab-btn" data-tab="sys-cmd">Comandos de Ativação</button>
+          </div>
+
+          <div class="subtab-content" data-tab-content="sys-srv">
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Arquivo /etc/systemd/system/meu-app.service</span>
+                <button type="button" class="copy-btn" data-copy-target="out-sys-service">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-sys-service"></pre>
+            </div>
+          </div>
+
+          <div class="subtab-content" data-tab-content="sys-tmr" style="display:none;">
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Arquivo /etc/systemd/system/meu-app.timer</span>
+                <button type="button" class="copy-btn" data-copy-target="out-sys-timer">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-sys-timer"></pre>
+            </div>
+          </div>
+
+          <div class="subtab-content" data-tab-content="sys-cmd" style="display:none;">
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Comandos Shell</span>
+                <button type="button" class="copy-btn" data-copy-target="out-sys-commands">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-sys-commands"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 8: CONSTRUTOR DE COMANDO TAR E RSYNC
+           ============================================================ -->
+      <section class="tool-panel" id="panel-tar-rsync">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Terminal &amp; Linux</span><span class="sep">/</span><span>tar &amp; rsync</span></div>
+          <div class="tool-title-row">
+            <h2>📦 Construtor de Comandos tar e rsync</h2>
+          </div>
+          <p class="tool-desc">Monte comandos exatos de arquivamento, compressão e sincronização remota com segurança e alta performance.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="tool-subtabs">
+            <button type="button" class="subtab-btn active" data-tab="tool-tar">tar (Arquivamento)</button>
+            <button type="button" class="subtab-btn" data-tab="tool-rsync">rsync (Sincronização)</button>
+          </div>
+
+          <!-- SUBTAB TAR -->
+          <div class="subtab-content" data-tab-content="tool-tar">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="tar-action">Operação:</label>
+                <select id="tar-action" class="input-select">
+                  <option value="c" selected>Criar arquivo (-c)</option>
+                  <option value="x">Extrair arquivo (-x)</option>
+                  <option value="t">Listar conteúdo (-t)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tar-compress">Compressão:</label>
+                <select id="tar-compress" class="input-select">
+                  <option value="z" selected>gzip (.tar.gz / -z)</option>
+                  <option value="j">bzip2 (.tar.bz2 / -j)</option>
+                  <option value="J">xz (.tar.xz / -J)</option>
+                  <option value="zst">zstd (.tar.zst / --zstd)</option>
+                  <option value="none">Sem compressão (.tar)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tar-file">Nome do Arquivo .tar:</label>
+                <input type="text" id="tar-file" class="input-text" value="backup_site.tar.gz">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tar-sources">Arquivos / Diretórios de Origem:</label>
+                <input type="text" id="tar-sources" class="input-text" value="/var/www/html /etc/nginx">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tar-exclude">Padrão para Excluir (--exclude):</label>
+                <input type="text" id="tar-exclude" class="input-text" value="*.log" placeholder="Ex: .git ou *.tmp">
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label" style="margin-top:1.5rem;">
+                  <input type="checkbox" id="tar-verbose" checked> Modo detalhado / Verboso (-v)
+                </label>
+              </div>
+            </div>
+
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Comando tar Gerado</span>
+                <button type="button" class="copy-btn" data-copy-target="out-tar-cmd">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-tar-cmd"></pre>
+            </div>
+          </div>
+
+          <!-- SUBTAB RSYNC -->
+          <div class="subtab-content" data-tab-content="tool-rsync" style="display:none;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="rsync-src">Origem (Source):</label>
+                <input type="text" id="rsync-src" class="input-text" value="/var/dados/">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rsync-dst">Destino (Target):</label>
+                <input type="text" id="rsync-dst" class="input-text" value="admin@backup-srv:/storage/backup/">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rsync-port">Porta SSH (se não-padrão):</label>
+                <input type="text" id="rsync-port" class="input-text" value="" placeholder="Ex: 2222 ou em branco">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rsync-bwlimit">Limite de Banda (KB/s):</label>
+                <input type="text" id="rsync-bwlimit" class="input-text" value="" placeholder="Ex: 5000">
+              </div>
+              <div class="form-group full-width">
+                <div class="checkbox-grid">
+                  <label class="checkbox-label"><input type="checkbox" id="rsync-progress" checked> Exibir progresso (-P)</label>
+                  <label class="checkbox-label"><input type="checkbox" id="rsync-delete"> Deletar arquivos órfãos no destino (--delete)</label>
+                  <label class="checkbox-label"><input type="checkbox" id="rsync-dryrun"> Modo Simulação / Teste (--dry-run)</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Comando rsync Gerado</span>
+                <button type="button" class="copy-btn" data-copy-target="out-rsync-cmd">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-rsync-cmd"></pre>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL: GERADOR E CALCULADOR DE ACLs (SETFACL / GETFACL)
+           ============================================================ -->
+      <section class="tool-panel" id="panel-acl">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Terminal &amp; Linux</span><span class="sep">/</span><span>Permissões ACL (setfacl)</span></div>
+          <div class="tool-title-row">
+            <h2>🛡️ Construtor &amp; Calculador de ACLs Linux (setfacl / getfacl)</h2>
+          </div>
+          <p class="tool-desc">Gerencie permissões estendidas POSIX, calcule o impacto da máscara efetiva, configure herança padrão em diretórios e analise dumps do getfacl.</p>
+        </div>
+
+        <!-- Presets Bar -->
+        <div class="card-box" style="padding:0.75rem 1rem; margin-bottom:1rem;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+            <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); font-weight:700; text-transform:uppercase;">⚡ Presets Rápidos:</span>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button type="button" class="chip-btn acl-preset-btn" data-preset="devs">👥 Grupo Devs (rwx)</button>
+              <button type="button" class="chip-btn acl-preset-btn" data-preset="web">🌐 Web / Nginx + Deploy</button>
+              <button type="button" class="chip-btn acl-preset-btn" data-preset="audit">👁️ Auditoria (Leitura r-x)</button>
+              <button type="button" class="chip-btn acl-preset-btn" data-preset="clean">🧹 Limpar ACLs (-b)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool Subtabs -->
+        <div class="card-box">
+          <div class="tool-subtabs">
+            <button type="button" class="subtab-btn active" data-tab="acl-builder">🛠️ Construtor Visual (setfacl)</button>
+            <button type="button" class="subtab-btn" data-tab="acl-analyzer">📋 Analisador &amp; Simulador (getfacl)</button>
+          </div>
+
+          <!-- SUBTAB 1: BUILDER -->
+          <div class="subtab-content" data-tab-content="acl-builder">
+            <div class="form-grid" style="margin-bottom:1.25rem;">
+              <div class="form-group" style="grid-column: span 2;">
+                <label class="form-label" for="acl-target-path">Caminho do Arquivo ou Diretório Alvo:</label>
+                <input type="text" id="acl-target-path" class="input-text" value="/var/www/site" placeholder="/caminho/do/arquivo_ou_pasta" spellcheck="false">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="acl-action-type">Ação Principal:</label>
+                <select id="acl-action-type" class="input-select">
+                  <option value="-m" selected>Modificar / Acrescentar Entradas (-m)</option>
+                  <option value="--set">Substituir Toda a ACL (--set)</option>
+                  <option value="-x">Remover Entradas Específicas (-x)</option>
+                  <option value="-b">Remover Todas as ACLs Estendidas (-b)</option>
+                  <option value="-k">Remover Apenas as ACLs Default (-k)</option>
+                </select>
+              </div>
+              <div class="form-group" style="display:flex; flex-direction:column; justify-content:flex-end; gap:0.4rem;">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="acl-opt-dir" checked>
+                  <span>É um Diretório (habilita herança default)</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="acl-opt-recursive">
+                  <span>Recursivo (-R)</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="acl-opt-physical">
+                  <span>Físico (-P, não seguir symlinks)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Permission Matrix Table -->
+            <div id="acl-matrix-container">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.4rem;">
+                <label class="form-label" style="margin-bottom:0;">Matriz de Entradas de Permissões:</label>
+                <div style="display:flex; gap:0.4rem;">
+                  <button type="button" class="chip-btn" id="acl-add-user-btn">+ Usuário Nomeado</button>
+                  <button type="button" class="chip-btn" id="acl-add-group-btn">+ Grupo Nomeado</button>
+                </div>
+              </div>
+
+              <div style="overflow-x:auto;">
+                <table class="acl-table" id="acl-entries-table">
+                  <thead>
+                    <tr>
+                      <th style="width:130px;">Tipo</th>
+                      <th>Entidade / Alvo</th>
+                      <th style="width:160px;">Permissão (rwx)</th>
+                      <th style="width:180px;">Permissão Efetiva</th>
+                      <th style="width:50px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="acl-entries-body">
+                    <!-- Base entries -->
+                    <tr data-entry-type="user-base">
+                      <td><span class="badge badge-cyan">user::</span></td>
+                      <td><span style="color:var(--muted);">Dono Base do Arquivo</span></td>
+                      <td>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-r" checked> r</label>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-w" checked> w</label>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-x" checked> x</label>
+                      </td>
+                      <td><span class="acl-eff-badge acl-eff-pass">rwx</span></td>
+                      <td></td>
+                    </tr>
+                    <tr data-entry-type="group-base">
+                      <td><span class="badge badge-cyan">group::</span></td>
+                      <td><span style="color:var(--muted);">Grupo Base do Arquivo</span></td>
+                      <td>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-r" checked> r</label>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-w"> w</label>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-x" checked> x</label>
+                      </td>
+                      <td id="acl-eff-group-base"><span class="acl-eff-badge acl-eff-pass">r-x</span></td>
+                      <td></td>
+                    </tr>
+                    <tr data-entry-type="other-base">
+                      <td><span class="badge badge-cyan">other::</span></td>
+                      <td><span style="color:var(--muted);">Outros Usuários</span></td>
+                      <td>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-r"> r</label>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-w"> w</label>
+                        <label class="acl-perm-cb"><input type="checkbox" class="cb-x"> x</label>
+                      </td>
+                      <td><span class="acl-eff-badge acl-eff-pass">---</span></td>
+                      <td></td>
+                    </tr>
+                    <!-- Mask row -->
+                    <tr data-entry-type="mask" style="background:hsl(225 30% 10% / 0.4);">
+                      <td><span class="badge badge-amber">mask::</span></td>
+                      <td>
+                        <div style="display:flex; align-items:center; gap:0.5rem;">
+                          <label class="checkbox-label" style="font-size:0.75rem;">
+                            <input type="checkbox" id="acl-manual-mask">
+                            <span>Definir Máscara Manual</span>
+                          </label>
+                          <span style="color:var(--muted); font-size:0.72rem;">(Teto máximo de direitos)</span>
+                        </div>
+                      </td>
+                      <td>
+                        <label class="acl-perm-cb"><input type="checkbox" id="acl-mask-r" class="cb-r" checked disabled> r</label>
+                        <label class="acl-perm-cb"><input type="checkbox" id="acl-mask-w" class="cb-w" checked disabled> w</label>
+                        <label class="acl-perm-cb"><input type="checkbox" id="acl-mask-x" class="cb-x" checked disabled> x</label>
+                      </td>
+                      <td><span class="acl-eff-badge acl-eff-pass" id="acl-eff-mask-val">rwx</span></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Inheritance Options (Default ACLs) -->
+            <div id="acl-default-box" style="margin-top:1.25rem; padding:0.85rem 1rem; border:1px solid var(--border); border-radius:8px; background:var(--bg2);">
+              <label class="checkbox-label" style="font-weight:700;">
+                <input type="checkbox" id="acl-apply-default" checked>
+                <span>Aplicar também como Default ACL (d:...) para novos arquivos e subdiretórios criados</span>
+              </label>
+              <div style="font-size:0.75rem; color:var(--muted); margin-top:0.35rem; margin-left:1.5rem;">
+                Garante que novos arquivos criados dentro desta pasta herdem automaticamente estas permissões sem precisar de um cron ou daemon.
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 2: ANALYZER & SIMULATOR -->
+          <div class="subtab-content" data-tab-content="acl-analyzer" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.4rem;">
+              <label class="form-label" for="acl-getfacl-input" style="margin-bottom:0;">Cole o texto de saída de um comando getfacl:</label>
+              <button type="button" class="chip-btn" id="acl-sample-getfacl-btn">Carregar Exemplo getfacl</button>
+            </div>
+            <textarea id="acl-getfacl-input" class="input-textarea" style="min-height:140px; font-size:0.78rem;" placeholder="# file: /var/www/site&#10;# owner: www-data&#10;# group: www-data&#10;user::rwx&#10;user:deploy:rwx&#10;group::r-x&#10;group:devs:rwx #effective:r-x&#10;mask::r-x&#10;other::---" spellcheck="false"></textarea>
+
+            <div id="acl-parsed-summary" style="margin-top:1rem;"></div>
+          </div>
+
+          <!-- Common Access Simulator Box -->
+          <div class="acl-sim-box">
+            <div style="font-family:var(--mono); font-size:0.85rem; font-weight:700; color:var(--cyan); display:flex; align-items:center; gap:0.4rem; margin-bottom:0.75rem;">
+              <span>🧪 Simulador de Acesso do Kernel Linux:</span>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:0.75rem; align-items:flex-end;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="acl-sim-user" style="font-size:0.75rem;">Nome do Usuário:</label>
+                <input type="text" id="acl-sim-user" class="input-text" value="deploy" placeholder="ex: deploy ou maria" style="font-size:0.8rem;">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="acl-sim-groups" style="font-size:0.75rem;">Grupos aos quais o usuário pertence (vírgula):</label>
+                <input type="text" id="acl-sim-groups" class="input-text" value="devs, users" placeholder="ex: devs, sudo, docker" style="font-size:0.8rem;">
+              </div>
+              <button type="button" class="btn btn-secondary" id="acl-sim-run-btn" style="padding:0.6rem 1rem; font-size:0.8rem;">Testar Acesso</button>
+            </div>
+
+            <div class="acl-sim-grid">
+              <div class="acl-sim-perm-card" id="acl-sim-card-r">
+                <div class="perm-label">📖 Leitura (Read)</div>
+                <div class="perm-status" id="acl-sim-status-r">---</div>
+              </div>
+              <div class="acl-sim-perm-card" id="acl-sim-card-w">
+                <div class="perm-label">✏️ Escrita (Write)</div>
+                <div class="perm-status" id="acl-sim-status-w">---</div>
+              </div>
+              <div class="acl-sim-perm-card" id="acl-sim-card-x">
+                <div class="perm-label">⚡ Execução (Exec)</div>
+                <div class="perm-status" id="acl-sim-status-x">---</div>
+              </div>
+            </div>
+            <div id="acl-sim-explanation" style="font-family:var(--mono); font-size:0.78rem; color:var(--muted); line-height:1.5;"></div>
+          </div>
+
+          <!-- Generated Commands Output -->
+          <div class="output-box" style="margin-top:1.25rem;">
+            <div class="output-header">
+              <span class="output-title">Comando setfacl Gerado</span>
+              <button type="button" class="copy-btn" data-copy-target="out-acl-cmd">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-acl-cmd"></pre>
+          </div>
+
+          <div class="output-box" style="margin-top:0.75rem;">
+            <div class="output-header">
+              <span class="output-title">Comando de Verificação &amp; Backup getfacl</span>
+              <button type="button" class="copy-btn" data-copy-target="out-acl-check">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-acl-check"></pre>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL: GERADOR & VALIDADOR DE SERVIDORES WEB (NGINX / APACHE)
+           ============================================================ -->
+      <section class="tool-panel" id="panel-webserver">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Terminal &amp; Linux</span><span class="sep">/</span><span>Servidores Web (Nginx &amp; Apache)</span></div>
+          <div class="tool-title-row">
+            <h2>🌐 Gerador &amp; Validador de Servidores Web (Nginx / Apache HTTPD)</h2>
+          </div>
+          <p class="tool-desc">Gere blocos de configuração de alto desempenho e segurança para Nginx (Server Block) e Apache HTTPD (VirtualHost): Proxy Reverso com WebSockets, SPA/Estático, PHP-FPM, redirecionamento forçado HTTPS, certificados SSL/TLS, cabeçalhos de segurança (HSTS, CSP, nosniff) e diagnóstico sintático em tempo real.</p>
+        </div>
+
+        <!-- Presets Bar -->
+        <div class="card-box" style="padding:0.75rem 1rem; margin-bottom:1rem;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+            <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); font-weight:700; text-transform:uppercase;">⚡ Presets Rápidos:</span>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button type="button" class="chip-btn ws-preset-btn" data-preset="proxy">⚡ Proxy Reverso (Node/Docker)</button>
+              <button type="button" class="chip-btn ws-preset-btn" data-preset="spa">📄 Estático / SPA (React/Vue)</button>
+              <button type="button" class="chip-btn ws-preset-btn" data-preset="php">🐘 PHP-FPM (WordPress/Laravel)</button>
+              <button type="button" class="chip-btn ws-preset-btn" data-preset="redirect">🔀 Redirecionamento 301</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool Subtabs -->
+        <div class="card-box">
+          <div class="tool-subtabs">
+            <button type="button" class="subtab-btn active" data-tab="ws-builder">🛠️ Construtor Visual</button>
+            <button type="button" class="subtab-btn" data-tab="ws-linter">🔍 Validador &amp; Diagnóstico de Sintaxe</button>
+          </div>
+
+          <!-- SUBTAB 1: BUILDER -->
+          <div class="subtab-content" data-tab-content="ws-builder">
+            
+            <div class="form-grid" style="margin-bottom:1.25rem;">
+              
+              <div class="form-group" style="grid-column: span 2;">
+                <label class="form-label">Servidor Web Alvo:</label>
+                <div style="display:flex; gap:1.5rem; align-items:center; margin-top:0.35rem;">
+                  <label class="radio-label" style="display:inline-flex; align-items:center; gap:0.45rem; cursor:pointer;">
+                    <input type="radio" name="ws-server-type" value="nginx" checked>
+                    <span style="font-weight:600; font-family:var(--mono);">🟢 Nginx (Server Block)</span>
+                  </label>
+                  <label class="radio-label" style="display:inline-flex; align-items:center; gap:0.45rem; cursor:pointer;">
+                    <input type="radio" name="ws-server-type" value="apache">
+                    <span style="font-weight:600; font-family:var(--mono);">🔴 Apache HTTPD (VirtualHost)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="ws-domain">Domínio Principal (ServerName):</label>
+                <input type="text" id="ws-domain" class="input-text" value="app.exemplo.com.br" placeholder="ex: app.exemplo.com.br" spellcheck="false">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="ws-aliases">Aliases / Domínios Extras:</label>
+                <input type="text" id="ws-aliases" class="input-text" value="www.app.exemplo.com.br" placeholder="ex: www.app.exemplo.com.br" spellcheck="false">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="ws-app-mode">Tipo de Aplicação / Carga:</label>
+                <select id="ws-app-mode" class="input-select">
+                  <option value="proxy" selected>Proxy Reverso (Node.js, Docker, Python, Go)</option>
+                  <option value="static">Estático / SPA (React, Vue, Vite, HTML)</option>
+                  <option value="php">PHP-FPM (WordPress, Laravel, PHP)</option>
+                  <option value="redirect">Redirecionamento Puro 301</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="ws-group-target">
+                <label class="form-label" id="ws-target-label" for="ws-target-val">Endereço de Destino (Upstream URL):</label>
+                <input type="text" id="ws-target-val" class="input-text" value="http://127.0.0.1:3000" placeholder="ex: http://127.0.0.1:3000" spellcheck="false">
+              </div>
+
+            </div>
+
+            <!-- Opções Condicionais por Tipo de Carga -->
+            <div class="card-box" id="ws-proxy-options" style="margin-bottom:1.25rem;">
+              <span class="card-title">Ajustes do Proxy Reverso</span>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:0.6rem; margin-top:0.6rem;">
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-websocket" checked> <span>Suporte a WebSockets (Upgrade &amp; Connection)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-fwd-headers" checked> <span>Enviar cabeçalhos X-Forwarded-For, X-Real-IP e X-Forwarded-Proto</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-buffering"> <span>Desativar proxy_buffering (ideal para SSE / Streaming)</span></label>
+              </div>
+            </div>
+
+            <div class="card-box" id="ws-static-options" style="margin-bottom:1.25rem; display:none;">
+              <span class="card-title">Ajustes de Site Estático / SPA</span>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:0.6rem; margin-top:0.6rem;">
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-spa-fallback" checked> <span>Roteamento SPA: fallback de 404 para /index.html (try_files $uri $uri/ /index.html)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-autoindex"> <span>Habilitar listagem de diretórios (autoindex on)</span></label>
+              </div>
+            </div>
+
+            <div class="card-box" id="ws-php-options" style="margin-bottom:1.25rem; display:none;">
+              <span class="card-title">Ajustes do PHP-FPM</span>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:0.6rem; margin-top:0.6rem;">
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-php-tryfiles" checked> <span>Prevenção de injeção: try_files $uri =404</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-php-intercept" checked> <span>Interceptar erros PHP (fastcgi_intercept_errors on)</span></label>
+              </div>
+            </div>
+
+            <!-- HTTPS, Certificados e TLS -->
+            <div class="card-box" style="margin-bottom:1.25rem;">
+              <span class="card-title">Segurança SSL / TLS &amp; HTTPS</span>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.6rem; margin-top:0.6rem; margin-bottom:1rem;">
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-ssl" checked> <span>Habilitar HTTPS (Porta 443)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-force-https" checked> <span>Forçar redirecionamento HTTP (80) → HTTPS (443)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-http2" checked> <span>Habilitar HTTP/2</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-hsts" checked> <span>HSTS (Strict-Transport-Security: 2 anos + preload)</span></label>
+              </div>
+
+              <div class="form-grid" id="ws-group-ssl-paths">
+                <div class="form-group">
+                  <label class="form-label" for="ws-cert-path">Caminho do Certificado (Fullchain PEM):</label>
+                  <input type="text" id="ws-cert-path" class="input-text" value="/etc/letsencrypt/live/app.exemplo.com.br/fullchain.pem" spellcheck="false">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ws-key-path">Caminho da Chave Privada (Privkey PEM):</label>
+                  <input type="text" id="ws-key-path" class="input-text" value="/etc/letsencrypt/live/app.exemplo.com.br/privkey.pem" spellcheck="false">
+                </div>
+              </div>
+            </div>
+
+            <!-- Hardening e Cabeçalhos de Segurança -->
+            <div class="card-box" style="margin-bottom:1.25rem;">
+              <span class="card-title">Hardening, Proteções e Limites</span>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:0.6rem; margin-top:0.6rem; margin-bottom:1rem;">
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-sec-headers" checked> <span>Cabeçalhos de Segurança (X-Frame-Options, X-Content-Type-Options: nosniff, Referrer-Policy)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-hide-tokens" checked> <span>Ocultar versão do servidor (server_tokens off / ServerSignature Off)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-block-hidden" checked> <span>Bloquear acesso a pastas e arquivos ocultos (.git, .env, .htaccess)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-cors"> <span>Habilitar cabeçalhos CORS abertos (Access-Control-Allow-Origin: *)</span></label>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="ws-max-body">Limite Máximo de Upload (Body Size):</label>
+                  <input type="text" id="ws-max-body" class="input-text" value="25M" placeholder="ex: 25M, 100M" spellcheck="false">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ws-log-name">Prefixo dos Arquivos de Log:</label>
+                  <input type="text" id="ws-log-name" class="input-text" value="app.exemplo.com.br" placeholder="ex: app.exemplo.com.br" spellcheck="false">
+                </div>
+              </div>
+            </div>
+
+            <!-- Performance e Cache -->
+            <div class="card-box" style="margin-bottom:1.25rem;">
+              <span class="card-title">Otimização de Performance e Cache</span>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:0.6rem; margin-top:0.6rem;">
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-gzip" checked> <span>Compressão Gzip ativa (HTML, CSS, JS, JSON, XML e SVG)</span></label>
+                <label class="checkbox-label"><input type="checkbox" id="ws-opt-cache-assets" checked> <span>Cache agressivo de assets estáticos (Imagens, CSS, JS com expires 30d)</span></label>
+              </div>
+            </div>
+
+            <!-- Saída de Configuração Gerada -->
+            <div class="output-box" style="margin-top:1.25rem;">
+              <div class="output-header">
+                <span class="output-title" id="ws-out-title">Configuração Gerada (Nginx Server Block)</span>
+                <div style="display:flex; gap:0.4rem;">
+                  <button type="button" class="btn btn-sm" id="ws-download-btn">💾 Baixar .conf</button>
+                  <button type="button" class="copy-btn" data-copy-target="out-ws-config">Copiar</button>
+                </div>
+              </div>
+              <pre class="output-pre" id="out-ws-config" style="max-height: 480px; overflow-y: auto;"></pre>
+            </div>
+
+            <!-- Comandos de Aplicação no Servidor -->
+            <div class="output-box" style="margin-top:0.75rem;">
+              <div class="output-header">
+                <span class="output-title">Comandos de Teste e Recarga do Servidor</span>
+                <button type="button" class="copy-btn" data-copy-target="out-ws-cmd">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-ws-cmd"></pre>
+            </div>
+
+          </div>
+
+          <!-- SUBTAB 2: VALIDADOR / LINTER -->
+          <div class="subtab-content" data-tab-content="ws-linter" style="display:none;">
+            <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1rem;">
+              Cole aqui um arquivo de configuração ou bloco de Nginx / Apache para inspecionar a sintaxe, detectar chaves desbalanceadas, diretivas com ponto-e-vírgula faltante, protocolos obsoletos e vulnerabilidades comuns.
+            </p>
+
+            <div class="form-group" style="margin-bottom:1rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                <label class="form-label" for="ws-linter-input" style="margin-bottom:0;">Código de Configuração para Análise:</label>
+                <div style="display:flex; gap:0.4rem;">
+                  <button type="button" class="chip-btn" id="ws-linter-sample-btn">Carregar Exemplo com Falhas</button>
+                  <button type="button" class="chip-btn" id="ws-linter-clear-btn">Limpar</button>
+                </div>
+              </div>
+              <textarea id="ws-linter-input" class="input-textarea" rows="12" placeholder="Cole aqui seu bloco server { ... } ou <VirtualHost> ... </VirtualHost>" spellcheck="false"></textarea>
+            </div>
+
+            <div style="margin-bottom:1.25rem;">
+              <button type="button" class="btn btn-primary" id="ws-linter-run-btn">🔍 Analisar Configuração</button>
+            </div>
+
+            <div id="ws-linter-results" style="display:none;">
+              <div id="ws-linter-badge" style="padding:0.85rem 1rem; border-radius:8px; margin-bottom:1rem; font-family:var(--mono);"></div>
+              <div id="ws-linter-issues"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 9: CONVERSOR E VALIDADOR JSON / YAML / TOML
+           ============================================================ -->
+      <section class="tool-panel" id="panel-data-convert">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Dados &amp; Formatação</span><span class="sep">/</span><span>JSON / YAML / TOML</span></div>
+          <div class="tool-title-row">
+            <h2>🔄 Conversor e Validador JSON / YAML / TOML</h2>
+          </div>
+          <p class="tool-desc">Valide sintaxe e converta bidirecionalmente entre JSON, YAML e TOML 100% no navegador.</p>
+        </div>
+
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+            <div id="data-status"><span class="badge badge-green">✓ Pronto</span></div>
+            <div class="preset-group">
+              <button type="button" class="chip-btn" data-data-sample="true">Carregar Exemplo</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="data-input">Entrada de Dados (Cole JSON ou YAML):</label>
+            <textarea id="data-input" class="input-textarea tall" spellcheck="false" placeholder="Cole seu JSON ou YAML aqui...">{
+  "nome": "Guilherme Neves",
+  "cargo": "Especialista em Infraestrutura",
+  "competencias": ["Linux", "Kubernetes", "Automação"],
+  "ativo": true,
+  "versao": 2
+}</textarea>
+          </div>
+
+          <div class="form-group" style="margin-top:1rem;">
+            <label class="form-label" for="data-out-format">Converter e Formatar para:</label>
+            <select id="data-out-format" class="input-select">
+              <option value="yaml" selected>YAML</option>
+              <option value="json-pretty">JSON Formatado (Pretty)</option>
+              <option value="json-min">JSON Minificado</option>
+              <option value="toml">TOML</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="output-box">
+          <div class="output-header">
+            <span class="output-title">Resultado Convertido</span>
+            <button type="button" class="copy-btn" data-copy-target="out-data-converted">Copiar</button>
+          </div>
+          <pre class="output-pre" id="out-data-converted"></pre>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 10: CODIFICADOR MULTI-FORMATO
+           ============================================================ -->
+      <section class="tool-panel" id="panel-codec">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Dados &amp; Formatação</span><span class="sep">/</span><span>Codificador Multi-formato</span></div>
+          <div class="tool-title-row">
+            <h2>🔤 Codificador / Decodificador Multi-formato</h2>
+          </div>
+          <p class="tool-desc">Codifique e decodifique textos em Base64 (com suporte total a UTF-8 / acentos), Base64 URL-safe, URL, HTML Entities e Hexadecimal.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / 3;">
+              <label class="form-label" for="codec-input">Texto de Entrada:</label>
+              <textarea id="codec-input" class="input-textarea" placeholder="Digite ou cole o texto aqui...">Olá, Canivete Suíço! 🐧 &lt;root@guineves&gt;</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="codec-mode">Modo de Operação:</label>
+              <select id="codec-mode" class="input-select">
+                <option value="encode" selected>Codificar (Encode)</option>
+                <option value="decode">Decodificar (Decode)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">Base64 Padrão (UTF-8 seguro)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-codec-base64">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-codec-base64"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">Base64 URL-Safe (sem +, / ou =)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-codec-base64url">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-codec-base64url"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">URL Encoding (Percent-encoding)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-codec-url">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-codec-url"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">HTML Entities</span>
+              <button type="button" class="copy-btn" data-copy-target="out-codec-html">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-codec-html"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">Hexadecimal (Bytes)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-codec-hex">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-codec-hex"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 11: TESTADOR DE REGEX
+           ============================================================ -->
+      <section class="tool-panel" id="panel-regex">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Dados &amp; Formatação</span><span class="sep">/</span><span>Testador de Regex</span></div>
+          <div class="tool-title-row">
+            <h2>🎯 Testador de Expressões Regulares (Regex)</h2>
+          </div>
+          <p class="tool-desc">Teste expressões regulares em tempo real com destaque visual das correspondências, captura de grupos e substituição.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / 3;">
+              <label class="form-label" for="regex-pattern">Expressão Regular (Pattern):</label>
+              <input type="text" id="regex-pattern" class="input-text" value="(\d{1,3}\.){3}\d{1,3}" placeholder="Ex: (\w+)@(\w+\.\w+)">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="regex-flags">Flags:</label>
+              <input type="text" id="regex-flags" class="input-text" value="g" placeholder="g, i, m, s, u">
+            </div>
+          </div>
+
+          <div class="preset-group">
+            <span class="preset-label">Exemplos rápidos:</span>
+            <button type="button" class="chip-btn" data-regex-preset="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">E-mail</button>
+            <button type="button" class="chip-btn" data-regex-preset="(\d{1,3}\.){3}\d{1,3}">IPv4</button>
+            <button type="button" class="chip-btn" data-regex-preset="https?:\/\/[^\s]+">URL</button>
+            <button type="button" class="chip-btn" data-regex-preset="\d{4}-\d{2}-\d{2}">Data ISO (YYYY-MM-DD)</button>
+            <button type="button" class="chip-btn" data-regex-preset="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}">UUID</button>
+          </div>
+
+          <div class="form-group" style="margin-top:1.25rem;">
+            <label class="form-label" for="regex-text">Texto de Teste:</label>
+            <textarea id="regex-text" class="input-textarea" placeholder="Cole o texto onde deseja buscar...">Servidor A: 192.168.1.1 conectado com sucesso.
+Servidor B: 10.0.0.12 em timeout na porta 443.
+Gateway: 172.16.254.1 rota ativa.</textarea>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">Correspondências no Texto (Destaque Visual)</div>
+          <div id="regex-highlight" class="regex-highlight-box"></div>
+
+          <div class="card-title" style="margin-top:1.5rem;">Tabela de Matches &amp; Grupos</div>
+          <div id="regex-matches-table"></div>
+
+          <div style="margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border);">
+            <div class="card-title">Substituição (Regex Replace)</div>
+            <div class="form-group">
+              <label class="form-label" for="regex-replace-input">Substituir correspondências por:</label>
+              <input type="text" id="regex-replace-input" class="input-text" value="[IP-OCULTO]" placeholder="Ex: [$1] ou [REDACTED]">
+            </div>
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Texto com Substituição Aplicada</span>
+                <button type="button" class="copy-btn" data-copy-target="out-regex-replaced">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-regex-replaced"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 12: COMPARADOR DE TEXTO / DIFF CHECKER
+           ============================================================ -->
+      <section class="tool-panel" id="panel-diff">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Dados &amp; Formatação</span><span class="sep">/</span><span>Diff Checker</span></div>
+          <div class="tool-title-row">
+            <h2>⚖️ Comparador de Texto / Diff Checker</h2>
+          </div>
+          <p class="tool-desc">Compare dois blocos de texto ou arquivos de configuração linha a linha com visualização lado a lado ou unificada.</p>
+        </div>
+
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+            <div id="diff-stats"></div>
+            <div style="display:flex; gap:0.75rem; align-items:center;">
+              <label class="checkbox-label"><input type="checkbox" id="diff-ignore-ws"> Ignorar espaços em branco</label>
+              <button type="button" class="btn btn-secondary" id="diff-swap-btn" style="padding:0.35rem 0.75rem;">⇄ Trocar Textos</button>
+            </div>
+          </div>
+
+          <div class="diff-container">
+            <div class="form-group">
+              <label class="form-label" for="diff-original">Texto Original (Antes):</label>
+              <textarea id="diff-original" class="input-textarea tall" spellcheck="false">server {
+    listen 80;
+    server_name exemplo.com;
+    root /var/www/site;
+    index index.html;
+}</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="diff-modified">Texto Modificado (Depois):</label>
+              <textarea id="diff-modified" class="input-textarea tall" spellcheck="false">server {
+    listen 443 ssl http2;
+    server_name exemplo.com;
+    root /var/www/site-v2;
+    index index.html;
+    ssl_certificate /etc/ssl/cert.pem;
+}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="tool-subtabs">
+            <button type="button" class="subtab-btn active" data-tab="diff-split">Lado a Lado (Split View)</button>
+            <button type="button" class="subtab-btn" data-tab="diff-unified">Unificado (Inline / Patch)</button>
+          </div>
+
+          <div class="subtab-content" data-tab-content="diff-split">
+            <div class="diff-container">
+              <div>
+                <div style="font-family:var(--mono); font-size:0.76rem; color:var(--muted); margin-bottom:0.35rem;">Original</div>
+                <div id="diff-view-orig" class="diff-view"></div>
+              </div>
+              <div>
+                <div style="font-family:var(--mono); font-size:0.76rem; color:var(--muted); margin-bottom:0.35rem;">Modificado</div>
+                <div id="diff-view-mod" class="diff-view"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="subtab-content" data-tab-content="diff-unified" style="display:none;">
+            <div id="diff-view-unified" class="diff-view"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL: VISUALIZADOR DE MARKDOWN SIDE-BY-SIDE
+           ============================================================ -->
+      <section class="tool-panel" id="panel-markdown">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Dados &amp; Formatação</span><span class="sep">/</span><span>Visualizador Markdown</span></div>
+          <div class="tool-title-row">
+            <h2>📝 Visualizador e Editor Markdown Side-by-Side</h2>
+          </div>
+          <p class="tool-desc">Edição e renderização de Markdown em tempo real lado a lado, com suporte a tabelas, checklists, blocos de código, alertas do GitHub e estatísticas de leitura.</p>
+        </div>
+
+        <div class="card-box" style="padding: 1rem;">
+          <!-- Toolbar -->
+          <div class="md-toolbar">
+            <div class="md-toolbar-group">
+              <button type="button" class="md-btn" data-md-action="bold" title="Negrito (**)"><strong>B</strong></button>
+              <button type="button" class="md-btn" data-md-action="italic" title="Itálico (*)"><em>I</em></button>
+              <button type="button" class="md-btn" data-md-action="heading" title="Título (###)">H</button>
+              <button type="button" class="md-btn" data-md-action="strike" title="Tachado (~~)"><s>S</s></button>
+              <span class="md-sep"></span>
+              <button type="button" class="md-btn" data-md-action="quote" title="Citação (>)">”</button>
+              <button type="button" class="md-btn" data-md-action="code" title="Código Inline (`code`)">&lt;/&gt;</button>
+              <button type="button" class="md-btn" data-md-action="codeblock" title="Bloco de Código (```)">{ }</button>
+              <span class="md-sep"></span>
+              <button type="button" class="md-btn" data-md-action="ul" title="Lista com Marcadores (-)">• List</button>
+              <button type="button" class="md-btn" data-md-action="task" title="Checklist (- [ ])">☑ Task</button>
+              <button type="button" class="md-btn" data-md-action="table" title="Tabela">▦ Table</button>
+              <button type="button" class="md-btn" data-md-action="link" title="Inserir Link">🔗 Link</button>
+            </div>
+
+            <div class="md-toolbar-actions">
+              <div class="md-view-toggles">
+                <button type="button" class="chip-btn active" data-md-view="split">Side-by-Side</button>
+                <button type="button" class="chip-btn" data-md-view="editor">Editor</button>
+                <button type="button" class="chip-btn" data-md-view="preview">Preview</button>
+              </div>
+              <button type="button" class="chip-btn" id="md-sample-btn">Carregar Exemplo</button>
+              <button type="button" class="chip-btn" id="md-clear-btn">Limpar</button>
+              <button type="button" class="copy-btn" id="md-copy-raw-btn" data-copy-target="md-input-text">Copiar MD</button>
+              <button type="button" class="copy-btn" id="md-copy-html-btn">Copiar HTML</button>
+            </div>
+          </div>
+
+          <!-- Stats Bar -->
+          <div class="md-stats-bar">
+            <span id="md-stat-words">0 palavras</span> · 
+            <span id="md-stat-chars">0 caracteres</span> · 
+            <span id="md-stat-lines">0 linhas</span> · 
+            <span id="md-stat-reading" style="color:var(--cyan);">⏱️ ~1 min de leitura</span>
+          </div>
+
+          <!-- Split Workspace -->
+          <div class="md-workspace" id="md-workspace">
+            <!-- Left: Raw Markdown Editor -->
+            <div class="md-pane md-editor-pane" id="md-editor-pane">
+              <div class="md-pane-header">
+                <span>📝 Markdown (Entrada)</span>
+                <label class="md-file-upload-btn">
+                  Abrir arquivo .md
+                  <input type="file" id="md-file-input" accept=".md,.markdown,.txt" style="display:none;">
+                </label>
+              </div>
+              <textarea id="md-input-text" class="md-textarea" placeholder="Digite ou cole seu Markdown aqui..." spellcheck="false"></textarea>
+            </div>
+
+            <!-- Right: Rendered HTML Preview -->
+            <div class="md-pane md-preview-pane" id="md-preview-pane">
+              <div class="md-pane-header">
+                <span>👁️ Preview Renderizado</span>
+                <button type="button" class="chip-btn" id="md-download-html-btn" title="Baixar como arquivo HTML">💾 Baixar HTML</button>
+              </div>
+              <div id="md-preview-content" class="md-preview-content"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL: TESTADOR & CONSTRUTOR DE PADRÕES GROK
+           ============================================================ -->
+      <section class="tool-panel" id="panel-grok">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Dados &amp; Formatação</span><span class="sep">/</span><span>Padrões Grok</span></div>
+          <div class="tool-title-row">
+            <h2>🧩 Testador &amp; Construtor de Padrões Grok (Elasticsearch / Logstash / Loki)</h2>
+          </div>
+          <p class="tool-desc">Teste e depure expressões Grok em tempo real com os padrões oficiais do Logstash/Elastic, suporte a conversão de tipos (:int, :float), padrões customizados e exportação direta de snippets para Elasticsearch Ingest Pipelines, Logstash, Grafana Loki e Vector.</p>
+        </div>
+
+        <!-- Presets Bar -->
+        <div class="card-box" style="padding:0.75rem 1rem; margin-bottom:1rem;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+            <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); font-weight:700; text-transform:uppercase;">⚡ Exemplos de Logs:</span>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button type="button" class="chip-btn grok-preset-btn" data-preset="apache">🌐 Apache/Nginx Combined</button>
+              <button type="button" class="chip-btn grok-preset-btn" data-preset="syslog">🐧 Linux Syslog (SSH Auth)</button>
+              <button type="button" class="chip-btn grok-preset-btn" data-preset="list">🔀 Fallback / Lista de Padrões</button>
+              <button type="button" class="chip-btn grok-preset-btn" data-preset="app">☕ Spring Boot / Java Log</button>
+              <button type="button" class="chip-btn grok-preset-btn" data-preset="postgres">🐘 PostgreSQL Query Log</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <label class="form-label" for="grok-pattern-input" style="margin-bottom:0;">Padrão Grok ou Lista de Padrões (Fallback):</label>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span id="grok-pattern-count-badge" class="badge" style="font-size:0.72rem;">1 padrão</span>
+                <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Sintaxe: %{PADRAO:campo[:tipo]}</span>
+              </div>
+            </div>
+            <textarea id="grok-pattern-input" class="input-textarea" rows="3" placeholder="Insira um padrão Grok por linha ou cole bloco Logstash match => [...] para testar lista com fallback..." spellcheck="false">%{COMBINEDAPACHELOG}</textarea>
+            <div style="font-family:var(--mono); font-size:0.73rem; color:var(--muted); margin-top:0.35rem;">
+              💡 Dica: Suporta múltiplos padrões (1 por linha) ou sintaxe Logstash <code>match =&gt; [...]</code>. O parser tentará casar cada padrão na ordem até o primeiro match com sucesso.
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <label class="form-label" for="grok-log-input" style="margin-bottom:0;">Linha de Log para Teste:</label>
+              <span id="grok-match-indicator" style="font-family:var(--mono); font-size:0.78rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:999px; background:var(--bg2); border:1px solid var(--border);">Aguardando teste</span>
+            </div>
+            <textarea id="grok-log-input" class="input-textarea" rows="4" placeholder="Cole aqui uma linha de log para validar o padrão..." spellcheck="false"></textarea>
+          </div>
+
+          <!-- Padrões Customizados (Details) -->
+          <details style="margin-bottom:1.25rem; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem;">
+            <summary style="cursor:pointer; font-family:var(--mono); font-size:0.82rem; font-weight:600; color:var(--cyan); user-select:none;">
+              ➕ Padrões Customizados Adicionais (opcional)
+            </summary>
+            <div style="margin-top:0.75rem;">
+              <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">
+                Defina padrões próprios no formato: <code>NOME_DO_PADRAO expressao_regex</code> (um por linha).
+              </p>
+              <textarea id="grok-custom-patterns" class="input-textarea" rows="3" placeholder="CUSTOM_ID [A-Z]{3}-[0-9]{5}&#10;ORDER_CODE ORD-\d+" spellcheck="false"></textarea>
+            </div>
+          </details>
+
+          <!-- Dicionário de Padrões Embutidos (Details) -->
+          <details style="margin-bottom:1.25rem; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem;">
+            <summary style="cursor:pointer; font-family:var(--mono); font-size:0.82rem; font-weight:600; color:var(--green); user-select:none;">
+              📚 Padrões Grok Nativos Disponíveis (Cheat Sheet)
+            </summary>
+            <div style="margin-top:0.75rem; font-size:0.8rem; line-height:1.7;">
+              <p style="color:var(--muted); margin-bottom:0.6rem;">Padrões prontos suportados (clique em qualquer um para inserir no padrão):</p>
+              <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                <code class="grok-pill" data-insert="%{SYSLOGTIMESTAMP:syslog_timestamp}" title="Data/hora syslog padrão (ex: Nov 12 14:15:02)">%{SYSLOGTIMESTAMP}</code>
+                <code class="grok-pill" data-insert="%{SYSLOGLINE}" title="Linha de syslog completa com cabeçalho e mensagem">%{SYSLOGLINE}</code>
+                <code class="grok-pill" data-insert="%{SYSLOGBASE}" title="Cabeçalho padrão de syslog (timestamp + host + programa)">%{SYSLOGBASE}</code>
+                <code class="grok-pill" data-insert="%{TIMESTAMP_ISO8601:timestamp}" title="ISO8601 (ex: 2026-11-12T14:22:45.123-03:00)">%{TIMESTAMP_ISO8601}</code>
+                <code class="grok-pill" data-insert="%{HTTPDATE:timestamp}" title="Data formato Apache/HTTP (ex: 10/Oct/2026:13:55:36 -0300)">%{HTTPDATE}</code>
+                <code class="grok-pill" data-insert="%{LOGLEVEL:level}" title="Níveis de log (INFO, WARN, ERROR, DEBUG...)">%{LOGLEVEL}</code>
+                <code class="grok-pill" data-insert="%{COMBINEDAPACHELOG}" title="Formato Combined de Apache/Nginx">%{COMBINEDAPACHELOG}</code>
+                <code class="grok-pill" data-insert="%{COMMONAPACHELOG}" title="Formato Common de Apache/Nginx">%{COMMONAPACHELOG}</code>
+                <code class="grok-pill" data-insert="%{IP:ip}" title="Endereço IP (v4 ou v6)">%{IP}</code>
+                <code class="grok-pill" data-insert="%{IPORHOST:hostname}" title="IP ou Hostname/FQDN">%{IPORHOST}</code>
+                <code class="grok-pill" data-insert="%{HOSTNAME:hostname}" title="Nome de host ou FQDN">%{HOSTNAME}</code>
+                <code class="grok-pill" data-insert="%{UNIXPATH:path}" title="Caminho Unix (ex: /var/log/syslog)">%{UNIXPATH}</code>
+                <code class="grok-pill" data-insert="%{PATH:path}" title="Caminho Unix ou Windows">%{PATH}</code>
+                <code class="grok-pill" data-insert="%{URI:url}" title="URL completa (ex: https://guineves.com.br/api)">%{URI}</code>
+                <code class="grok-pill" data-insert="%{EMAILADDRESS:email}" title="Endereço de e-mail">%{EMAILADDRESS}</code>
+                <code class="grok-pill" data-insert="%{UUID:uuid}" title="Identificador UUID">%{UUID}</code>
+                <code class="grok-pill" data-insert="%{MAC:mac}" title="Endereço MAC de rede">%{MAC}</code>
+                <code class="grok-pill" data-insert="%{POSINT:id:int}" title="Inteiro positivo (>0)">%{POSINT}</code>
+                <code class="grok-pill" data-insert="%{NUMBER:num:float}" title="Número inteiro ou ponto flutuante">%{NUMBER}</code>
+                <code class="grok-pill" data-insert="%{WORD:word}" title="Palavra alfanumérica simples (\b\w+\b)">%{WORD}</code>
+                <code class="grok-pill" data-insert="%{NOTSPACE:token}" title="Qualquer texto sem espaços (\S+)">%{NOTSPACE}</code>
+                <code class="grok-pill" data-insert="%{QUOTEDSTRING:str}" title="Texto delimitado por aspas">%{QUOTEDSTRING}</code>
+                <code class="grok-pill" data-insert="%{DATA:field}" title="Captura não-gulosa (lazy .*?)">%{DATA}</code>
+                <code class="grok-pill" data-insert="%{GREEDYDATA:message}" title="Restante completo do texto (.*)">%{GREEDYDATA}</code>
+              </div>
+            </div>
+          </details>
+
+          <!-- Ações -->
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+            <button type="button" class="btn btn-primary" id="grok-run-btn">⚡ Executar Match Grok</button>
+            <button type="button" class="btn" id="grok-copy-regex-btn">📋 Copiar Regex Compilado</button>
+          </div>
+
+          <!-- Resultados do Grok -->
+          <div id="grok-results-container">
+
+            <!-- Barra Superior de Modos de Visualização -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.6rem; margin-bottom:1rem; border-bottom:1px solid var(--border); padding-bottom:0.6rem;">
+              <div class="tool-subtabs" style="margin:0; border:none; padding:0;">
+                <button type="button" class="subtab-btn active" data-grok-tab="grok-view-json">
+                  <span>{ } Saída JSON</span>
+                </button>
+                <button type="button" class="subtab-btn" data-grok-tab="grok-view-table">
+                  <span>📋 Tabela Estruturada</span>
+                  <span id="grok-fields-count" class="badge" style="margin-left:0.35rem;">0 campos</span>
+                </button>
+                <button type="button" class="subtab-btn" data-grok-tab="grok-view-highlight">
+                  <span>🎨 Destaque no Log</span>
+                </button>
+                <button type="button" class="subtab-btn" data-grok-tab="grok-view-snippets">
+                  <span>⚙️ Snippets de Config</span>
+                </button>
+              </div>
+
+              <!-- Controles Rápidos de Formatação JSON -->
+              <div id="grok-json-controls" style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); font-weight:600;">Formato JSON:</span>
+                <label style="font-family:var(--mono); font-size:0.75rem; color:var(--fg); display:inline-flex; align-items:center; gap:0.3rem; cursor:pointer;" title="JSON identado com quebras de linha">
+                  <input type="radio" name="grok-json-mode" value="pretty" checked> Formatado (Pretty)
+                </label>
+                <label style="font-family:var(--mono); font-size:0.75rem; color:var(--fg); display:inline-flex; align-items:center; gap:0.3rem; cursor:pointer;" title="Newline Delimited JSON: um JSON independente por linha de log">
+                  <input type="radio" name="grok-json-mode" value="ndjson"> NDJSON (1/linha)
+                </label>
+                <label style="font-family:var(--mono); font-size:0.75rem; color:var(--fg); display:inline-flex; align-items:center; gap:0.3rem; cursor:pointer;" title="JSON minificado em linha única">
+                  <input type="radio" name="grok-json-mode" value="compact"> Compacto
+                </label>
+              </div>
+            </div>
+
+            <!-- VIEW 1: DOCUMENTO JSON EXTRAÍDO (PADRÃO) -->
+            <div id="grok-view-json" class="grok-view-pane">
+              <div class="output-box" style="margin-bottom:1rem;">
+                <div class="output-header">
+                  <span class="output-title">Documento JSON Estruturado (Elasticsearch / Logstash / Vector)</span>
+                  <div style="display:flex; gap:0.4rem; align-items:center;">
+                    <button type="button" class="copy-btn" data-copy-target="out-grok-json">Copiar JSON</button>
+                    <button type="button" class="btn btn-sm" id="grok-download-json-btn" style="padding:0.25rem 0.6rem; font-size:0.75rem;">⬇️ Baixar .json</button>
+                  </div>
+                </div>
+                <pre class="output-pre" id="out-grok-json" style="max-height:520px; overflow-y:auto; white-space:pre-wrap; word-break:break-word;">{}</pre>
+              </div>
+            </div>
+
+            <!-- VIEW 2: TABELA ESTRUTURADA DE CAMPOS -->
+            <div id="grok-view-table" class="grok-view-pane" style="display:none;">
+              <div class="output-box" style="margin-bottom:1rem;">
+                <div class="output-header">
+                  <span class="output-title">Campos Estruturados Extraídos</span>
+                  <span id="grok-table-meta" class="badge">0 linhas</span>
+                </div>
+                <div style="overflow-x:auto;">
+                  <table class="acl-table" id="grok-fields-table">
+                    <thead>
+                      <tr>
+                        <th style="width:25%;">Campo</th>
+                        <th style="width:20%;">Tipo</th>
+                        <th>Valor Extraído</th>
+                      </tr>
+                    </thead>
+                    <tbody id="grok-fields-body">
+                      <tr><td colspan="3" style="text-align:center; color:var(--muted); padding:1rem;">Nenhum match realizado ainda.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 3: DESTAQUE VISUAL DAS CAPTURAS NO LOG -->
+            <div id="grok-view-highlight" class="grok-view-pane" style="display:none;">
+              <div class="output-box" style="margin-bottom:1rem;">
+                <div class="output-header">
+                  <span class="output-title">Destaque Visual das Capturas no Log (Linha a Linha)</span>
+                </div>
+                <div id="grok-highlight-box" class="grok-highlight-container" style="padding:0.75rem; font-family:var(--mono); font-size:0.85rem; line-height:1.6; background:var(--bg2); border-radius:6px; min-height:48px; max-height:520px; overflow-y:auto;"></div>
+              </div>
+            </div>
+
+            <!-- VIEW 4: EXPORTAR CONFIGURAÇÃO -->
+            <div id="grok-view-snippets" class="grok-view-pane" style="display:none;">
+              <div class="output-box">
+                <div class="output-header">
+                  <span class="output-title">Exportar Snippet de Configuração</span>
+                  <div class="tool-subtabs" style="margin:0; border:none; padding:0;">
+                    <button type="button" class="subtab-btn active" data-tab="grok-out-logstash" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Logstash</button>
+                    <button type="button" class="subtab-btn" data-tab="grok-out-elastic" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Ingest Pipeline</button>
+                    <button type="button" class="subtab-btn" data-tab="grok-out-loki" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Grafana Loki</button>
+                    <button type="button" class="subtab-btn" data-tab="grok-out-vector" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Vector</button>
+                  </div>
+                </div>
+
+                <div class="subtab-content" data-tab-content="grok-out-logstash">
+                  <div style="display:flex; justify-content:flex-end; margin-bottom:0.4rem;">
+                    <button type="button" class="copy-btn" data-copy-target="out-grok-logstash">Copiar Logstash</button>
+                  </div>
+                  <pre class="output-pre" id="out-grok-logstash"></pre>
+                </div>
+
+                <div class="subtab-content" data-tab-content="grok-out-elastic" style="display:none;">
+                  <div style="display:flex; justify-content:flex-end; margin-bottom:0.4rem;">
+                    <button type="button" class="copy-btn" data-copy-target="out-grok-elastic">Copiar Ingest Pipeline</button>
+                  </div>
+                  <pre class="output-pre" id="out-grok-elastic"></pre>
+                </div>
+
+                <div class="subtab-content" data-tab-content="grok-out-loki" style="display:none;">
+                  <div style="display:flex; justify-content:flex-end; margin-bottom:0.4rem;">
+                    <button type="button" class="copy-btn" data-copy-target="out-grok-loki">Copiar Loki Pattern</button>
+                  </div>
+                  <pre class="output-pre" id="out-grok-loki"></pre>
+                </div>
+
+                <div class="subtab-content" data-tab-content="grok-out-vector" style="display:none;">
+                  <div style="display:flex; justify-content:flex-end; margin-bottom:0.4rem;">
+                    <button type="button" class="copy-btn" data-copy-target="out-grok-vector">Copiar Vector Remap</button>
+                  </div>
+                  <pre class="output-pre" id="out-grok-vector"></pre>
+                </div>
+
+              </div>
+            </div>
+
+              <div class="subtab-content" data-tab-content="grok-out-loki" style="display:none;">
+                <div style="display:flex; justify-content:flex-end; margin-bottom:0.4rem;">
+                  <button type="button" class="copy-btn" data-copy-target="out-grok-loki">Copiar Loki Pattern</button>
+                </div>
+                <pre class="output-pre" id="out-grok-loki"></pre>
+              </div>
+
+              <div class="subtab-content" data-tab-content="grok-out-vector" style="display:none;">
+                <div style="display:flex; justify-content:flex-end; margin-bottom:0.4rem;">
+                  <button type="button" class="copy-btn" data-copy-target="out-grok-vector">Copiar Vector Remap</button>
+                </div>
+                <pre class="output-pre" id="out-grok-vector"></pre>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 13: DECODIFICADOR DE JWT
+           ============================================================ -->
+      <section class="tool-panel" id="panel-jwt">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Segurança &amp; Criptografia</span><span class="sep">/</span><span>Decodificador JWT</span></div>
+          <div class="tool-title-row">
+            <h2>🎫 Decodificador de JWT (JSON Web Token)</h2>
+          </div>
+          <p class="tool-desc">Decodifique tokens JWT localmente sem enviar nada para servidores externos. Analise claims de expiração, emissor e algoritmo.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-group">
+            <label class="form-label" for="jwt-input">Cole seu token JWT:</label>
+            <textarea id="jwt-input" class="input-textarea" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." spellcheck="false">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikd1aWxoZXJtZSBOZXZlcyIsImFkbWluIjp0cnVlLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTk5OTk5OTk5OX0.4flgLpXfG-vJq1N67rXo-Jp97q7588q4kR8w</textarea>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">Análise de Segurança &amp; Validade</div>
+          <div id="jwt-claims-info"></div>
+
+          <div class="output-box" style="margin-top:1.5rem;">
+            <div class="output-header">
+              <span class="output-title">Header (Cabeçalho)</span>
+              <button type="button" class="copy-btn" data-copy-target="jwt-header-box">Copiar</button>
+            </div>
+            <pre class="output-pre" id="jwt-header-box" style="color:var(--violet);"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">Payload (Dados &amp; Claims)</span>
+              <button type="button" class="copy-btn" data-copy-target="jwt-payload-box">Copiar</button>
+            </div>
+            <pre class="output-pre" id="jwt-payload-box" style="color:var(--cyan);"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">Assinatura (Signature)</span>
+              <button type="button" class="copy-btn" data-copy-target="jwt-signature-box">Copiar</button>
+            </div>
+            <pre class="output-pre" id="jwt-signature-box" style="color:var(--muted);"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 14: GERADOR DE HASHES
+           ============================================================ -->
+      <section class="tool-panel" id="panel-hashes">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Segurança &amp; Criptografia</span><span class="sep">/</span><span>Gerador de Hashes</span></div>
+          <div class="tool-title-row">
+            <h2>#️⃣ Gerador de Hashes (SHA &amp; MD5)</h2>
+          </div>
+          <p class="tool-desc">Calcule hashes MD5, SHA-1, SHA-256, SHA-384 e SHA-512 de textos ou arquivos locais (via Web Crypto sem upload).</p>
+        </div>
+
+        <div class="card-box">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / 3;">
+              <label class="form-label" for="hash-text-input">Texto de Entrada:</label>
+              <textarea id="hash-text-input" class="input-textarea" placeholder="Digite o texto para gerar os hashes...">guineves.com.br</textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hash-file-input">Ou selecione um Arquivo Local:</label>
+              <input type="file" id="hash-file-input" class="input-text">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top:1.25rem;">
+            <label class="form-label" for="hash-compare-input">Comparar com Hash de Referência (Verificação de Integridade):</label>
+            <input type="text" id="hash-compare-input" class="input-text" placeholder="Cole o hash esperado para conferir...">
+            <div id="hash-compare-result" style="margin-top:0.4rem;"></div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">SHA-256 (Padrão Moderno)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-hash-sha256">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-hash-sha256"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">SHA-512</span>
+              <button type="button" class="copy-btn" data-copy-target="out-hash-sha512">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-hash-sha512"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">SHA-384</span>
+              <button type="button" class="copy-btn" data-copy-target="out-hash-sha384">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-hash-sha384"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">SHA-1 (Legado)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-hash-sha1">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-hash-sha1"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">MD5 (Legado / Checksum rápido)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-hash-md5">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-hash-md5"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 15: GERADOR DE SENHAS & PASSPHRASES
+           ============================================================ -->
+      <section class="tool-panel" id="panel-passwords">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Segurança &amp; Criptografia</span><span class="sep">/</span><span>Senhas &amp; Chaves</span></div>
+          <div class="tool-title-row">
+            <h2>🔑 Gerador de Senhas, Passphrases e Chaves Aleatórias</h2>
+          </div>
+          <p class="tool-desc">Geração criptograficamente segura via <code>window.crypto.getRandomValues()</code> com medidor de entropia.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="tool-subtabs">
+            <button type="button" class="subtab-btn active" data-tab="tab-pwd">Senha Complexa</button>
+            <button type="button" class="subtab-btn" data-tab="tab-passphrase">Passphrase (Diceware)</button>
+            <button type="button" class="subtab-btn" data-tab="tab-tokens">Chaves &amp; Tokens (Hex / Base64 / UUID)</button>
+          </div>
+
+          <!-- SUBTAB SENHA COMPLEXA -->
+          <div class="subtab-content" data-tab-content="tab-pwd">
+            <div class="form-group" style="margin-bottom:1.25rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                <label class="form-label" for="pwd-length">Comprimento da Senha:</label>
+                <strong id="pwd-length-val" style="color:var(--cyan); font-family:var(--mono);">24</strong>
+              </div>
+              <input type="range" id="pwd-length" min="8" max="64" value="24" style="width:100%; accent-color:var(--green);">
+            </div>
+
+            <div class="checkbox-grid" style="margin-bottom:1.5rem;">
+              <label class="checkbox-label"><input type="checkbox" id="pwd-upper" checked> Maiúsculas (A-Z)</label>
+              <label class="checkbox-label"><input type="checkbox" id="pwd-lower" checked> Minúsculas (a-z)</label>
+              <label class="checkbox-label"><input type="checkbox" id="pwd-numbers" checked> Números (0-9)</label>
+              <label class="checkbox-label"><input type="checkbox" id="pwd-symbols" checked> Símbolos (!@#$%...)</label>
+              <label class="checkbox-label"><input type="checkbox" id="pwd-no-ambiguous" checked> Evitar caracteres ambíguos (0, O, 1, l, I)</label>
+            </div>
+
+            <div style="display:flex; gap:0.75rem; align-items:center;">
+              <button type="button" class="btn btn-primary" id="pwd-gen-btn">🎲 Gerar Nova Senha</button>
+              <div id="pwd-entropy"></div>
+            </div>
+
+            <div class="output-box" style="margin-top:1.25rem;">
+              <div class="output-header">
+                <span class="output-title">Senha Gerada</span>
+                <button type="button" class="copy-btn" data-copy-target="pwd-out">Copiar</button>
+              </div>
+              <input type="text" id="pwd-out" class="input-text" readonly style="font-size:1.25rem; font-weight:700; border:none; background:transparent;">
+            </div>
+          </div>
+
+          <!-- SUBTAB PASSPHRASE -->
+          <div class="subtab-content" data-tab-content="tab-passphrase" style="display:none;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="phrase-count">Quantidade de Palavras:</label>
+                <input type="number" id="phrase-count" class="input-text" min="3" max="8" value="4">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="phrase-sep">Separador:</label>
+                <input type="text" id="phrase-sep" class="input-text" value="-">
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label" style="margin-top:1.8rem;">
+                  <input type="checkbox" id="phrase-capitalize" checked> Iniciais Maiúsculas
+                </label>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="phrase-gen-btn" style="margin-top:1.25rem;">🎲 Gerar Passphrase</button>
+
+            <div class="output-box" style="margin-top:1.25rem;">
+              <div class="output-header">
+                <span class="output-title">Passphrase Gerada</span>
+                <button type="button" class="copy-btn" data-copy-target="phrase-out">Copiar</button>
+              </div>
+              <input type="text" id="phrase-out" class="input-text" readonly style="font-size:1.2rem; font-weight:700; border:none; background:transparent;">
+            </div>
+          </div>
+
+          <!-- SUBTAB TOKENS -->
+          <div class="subtab-content" data-tab-content="tab-tokens" style="display:none;">
+            <button type="button" class="btn btn-primary" id="token-gen-btn" style="margin-bottom:1.25rem;">🎲 Gerar Novos Tokens</button>
+
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Chave Hexadecimal (256 bits / 32 bytes)</span>
+                <button type="button" class="copy-btn" data-copy-target="out-token-hex">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-token-hex"></pre>
+            </div>
+
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">Token Base64 URL-Safe (32 bytes)</span>
+                <button type="button" class="copy-btn" data-copy-target="out-token-b64">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-token-b64"></pre>
+            </div>
+
+            <div class="output-box">
+              <div class="output-header">
+                <span class="output-title">UUID v4</span>
+                <button type="button" class="copy-btn" data-copy-target="out-token-uuid">Copiar</button>
+              </div>
+              <pre class="output-pre" id="out-token-uuid"></pre>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 16: INSPETOR DE CERTIFICADOS X.509 (PEM)
+           ============================================================ -->
+      <section class="tool-panel" id="panel-x509">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Segurança &amp; Criptografia</span><span class="sep">/</span><span>Certificados X.509</span></div>
+          <div class="tool-title-row">
+            <h2>📜 Inspetor de Certificados X.509 (PEM)</h2>
+          </div>
+          <p class="tool-desc">Inspecione certificados SSL/TLS individuais ou cadeias completas (chain), com análise de Subject, Issuer, propriedades estendidas (SAN, Basic Constraints, Key Usage, EKU) e validação criptográfica de cadeia 100% offline.</p>
+        </div>
+
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+            <label class="form-label" for="x509-input" style="margin-bottom:0;">Cole um ou mais Certificados PEM (Cadeia / Bundle):</label>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button type="button" class="chip-btn" id="x509-sample-chain-btn">⚡ Carregar Cadeia (3 Níveis)</button>
+              <button type="button" class="chip-btn" id="x509-sample-inv-btn" title="Carregar cadeia com ordem invertida para testar a validação de ordem">⚠️ Cadeia Invertida (Teste)</button>
+              <button type="button" class="chip-btn" id="x509-sample-leaf-btn">📄 Certificado Único</button>
+              <button type="button" class="chip-btn" id="x509-clear-btn">Limpar</button>
+            </div>
+          </div>
+          <textarea id="x509-input" class="input-textarea" style="min-height:160px; font-size:0.78rem;" placeholder="-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE----- (cole 1 ou múltiplos certificados para validação de cadeia)" spellcheck="false"></textarea>
+        </div>
+
+        <div id="x509-results"><span class="m">Aguardando certificado...</span></div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 17: CONVERSOR DE TIMESTAMP (EPOCH)
+           ============================================================ -->
+      <section class="tool-panel" id="panel-timestamp">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Utilitários de Sistema</span><span class="sep">/</span><span>Timestamp Epoch</span></div>
+          <div class="tool-title-row">
+            <h2>🕒 Conversor de Timestamp (Epoch / Unix Time)</h2>
+          </div>
+          <p class="tool-desc">Conversão bidirecional entre segundos/milissegundos Unix e datas legíveis em horário local e UTC.</p>
+        </div>
+
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <span style="font-family:var(--mono); font-size:0.85rem; color:var(--muted);">Timestamp Atual (Ao Vivo): </span>
+              <strong id="ts-live-clock" style="font-family:var(--mono); font-size:1.3rem; color:var(--green); margin-left:0.5rem;"></strong>
+            </div>
+            <button type="button" class="btn btn-secondary" id="ts-now-btn" style="padding:0.35rem 0.75rem;">Usar Agora</button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ts-input">Timestamp Unix (Segundos ou Milissegundos):</label>
+            <input type="text" id="ts-input" class="input-text" value="1731411844" style="font-size:1.15rem; font-weight:700;">
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">Datas Convertidas</div>
+          <div id="ts-results"></div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">Converter Data do Calendário para Timestamp</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="ts-date-input">Data:</label>
+              <input type="date" id="ts-date-input" class="input-text">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="ts-time-input">Hora:</label>
+              <input type="time" id="ts-time-input" class="input-text" step="1">
+            </div>
+          </div>
+
+          <div class="output-box" style="margin-top:1.25rem;">
+            <div class="output-header">
+              <span class="output-title">Timestamp em Segundos</span>
+              <button type="button" class="copy-btn" data-copy-target="out-ts-from-cal-sec">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-ts-from-cal-sec"></pre>
+          </div>
+
+          <div class="output-box">
+            <div class="output-header">
+              <span class="output-title">Timestamp em Milissegundos (JavaScript)</span>
+              <button type="button" class="copy-btn" data-copy-target="out-ts-from-cal-ms">Copiar</button>
+            </div>
+            <pre class="output-pre" id="out-ts-from-cal-ms"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TOOL 18: CONVERSOR DE BASES & UNIDADES DE DADOS
+           ============================================================ -->
+      <section class="tool-panel" id="panel-bases">
+        <div class="tool-header">
+          <div class="tool-breadcrumbs"><span class="cat">Utilitários de Sistema</span><span class="sep">/</span><span>Bases &amp; Unidades</span></div>
+          <div class="tool-title-row">
+            <h2>🧮 Conversor de Bases Numéricas e Unidades de Dados</h2>
+          </div>
+          <p class="tool-desc">Conversão simultânea entre Decimal, Hexadecimal, Octal, Binário e comparação entre padrões SI (10ⁿ) e IEC (2ⁿ).</p>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">Bases Numéricas Sincronizadas</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="base-dec">Decimal (Base 10):</label>
+              <input type="text" id="base-dec" class="input-text" value="255">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="base-hex">Hexadecimal (Base 16):</label>
+              <input type="text" id="base-hex" class="input-text" value="FF">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="base-oct">Octal (Base 8):</label>
+              <input type="text" id="base-oct" class="input-text" value="377">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="base-ascii">ASCII / Char:</label>
+              <input type="text" id="base-ascii" class="input-text" value="" maxlength="1">
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label" for="base-bin">Binário (Base 2):</label>
+              <input type="text" id="base-bin" class="input-text" value="1111 1111" style="letter-spacing:1px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-title">Conversor de Armazenamento: Padrão Decimal (SI) vs Binário (IEC)</div>
+          <p class="m" style="margin-bottom:1rem; font-size:0.85rem;">Esclarece a diferença clássica: 1 TB comercial corresponde a ~931.32 GiB no sistema operacional.</p>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="unit-data-val">Valor:</label>
+              <input type="number" id="unit-data-val" class="input-text" value="1" min="0" step="any">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="unit-data-select">Unidade de Entrada:</label>
+              <select id="unit-data-select" class="input-select">
+                <option value="TB" selected>Terabytes (TB - 10¹²)</option>
+                <option value="TiB">Tebibytes (TiB - 2⁴⁰)</option>
+                <option value="GB">Gigabytes (GB - 10⁹)</option>
+                <option value="GiB">Gibibytes (GiB - 2³⁰)</option>
+                <option value="MB">Megabytes (MB - 10⁶)</option>
+                <option value="MiB">Mebibytes (MiB - 2²⁰)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="data-units-result"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- PIX COFFEE MODAL -->
+  <div class="pix-modal-backdrop" id="pix-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pix-modal-title">
+    <div class="pix-modal-card">
+      <button type="button" class="pix-modal-close" id="pix-modal-close" aria-label="Fechar janela">✕</button>
+      <div class="pix-modal-header">
+        <span class="pix-modal-icon">☕</span>
+        <h2 id="pix-modal-title">Pagar um café via Pix</h2>
+        <p class="pix-modal-subtitle">
+          O Canivete Suíço é 100% gratuito, sem anúncios e roda localmente no seu navegador. Se ele facilitou o seu dia, qualquer contribuição ajuda a manter o projeto!
+        </p>
+      </div>
+      <div class="pix-qr-box">
+        <img src="pix-qr.svg" alt="QR Code Pix" width="188" height="188" class="pix-qr-img">
+      </div>
+      <div class="pix-copy-group">
+        <span class="pix-copy-label">Chave Pix (Aleatória)</span>
+        <div class="pix-copy-row">
+          <code class="pix-copy-value" id="pix-key-value">9ffc3caa-d11c-4bd2-b569-f56f8bb3177d</code>
+          <button type="button" class="btn-primary pix-copy-btn" data-copy-target="pix-key-value" data-copy-msg="Chave Pix copiada!">Copiar chave</button>
+        </div>
+      </div>
+      <div class="pix-copy-group">
+        <span class="pix-copy-label">Pix Copia e Cola</span>
+        <div class="pix-copy-row">
+          <code class="pix-copy-value pix-copy-value-truncate" id="pix-brcode-value">00020126580014br.gov.bcb.pix01369ffc3caa-d11c-4bd2-b569-f56f8bb3177d5204000053039865802BR5915GUILHERME NEVES6006BRASIL62070503***6304FA84</code>
+          <button type="button" class="btn-secondary pix-copy-btn" data-copy-target="pix-brcode-value" data-copy-msg="Código Pix Copia e Cola copiado!">Copiar código</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-notice" class="toast-notice" role="alert" aria-live="polite">Copiado para a área de transferência! ✓</div>
+
+  <!-- SCRIPT -->
+  <script src="canivete.js"></script>
+</body>
+</html>
