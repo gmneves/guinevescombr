@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cheat Sheets (tldr) — Linux, Redes, Git &amp; Infra · Guilherme Neves</title>
+  <meta name="description" content="Mural interativo de Cheat Sheets no estilo tldr e post-its: Linux, Shell, Redes, SSH, OpenSSL, HTTP, Git, Docker, Kubernetes, systemd, Vim, PostgreSQL e Regex.">
+  <meta name="keywords" content="cheat sheet, tldr, linux, bash, ssh, openssl, tcpdump, http, git, docker, kubernetes, kubectl, systemd, vim, neovim, postgresql, psql, regex">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://guineves.com.br/cheatsheets/">
+
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Cheat Sheets (tldr) — Guilherme Neves">
+  <meta property="og:description" content="Referência rápida em estilo tldr e post-its interativos para Infraestrutura, Linux, Redes, Containers e Dev.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://guineves.com.br/cheatsheets/">
+  <meta property="og:image" content="https://guineves.com.br/og-image.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cheat Sheets (tldr) — Guilherme Neves">
+  <meta name="twitter:description" content="Referência rápida em estilo tldr e post-its interativos para Infraestrutura, Linux, Redes, Containers e Dev.">
+  <meta name="twitter:image" content="https://guineves.com.br/og-image.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Cheat Sheets (tldr) — Linux, Redes, Git & Infra",
+    "description": "Mural interativo de Cheat Sheets no estilo tldr e post-its para Infraestrutura, Linux, Redes, Containers, Bancos de Dados e Dev.",
+    "url": "https://guineves.com.br/cheatsheets/",
+    "inLanguage": "pt-BR",
+    "author": {
+      "@type": "Person",
+      "name": "Guilherme Neves",
+      "url": "https://guineves.com.br/"
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": 14,
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Bash & Produtividade", "url": "https://guineves.com.br/cheatsheets/#bash" },
+        { "@type": "ListItem", "position": 2, "name": "Processos & Sistema", "url": "https://guineves.com.br/cheatsheets/#processos" },
+        { "@type": "ListItem", "position": 3, "name": "Texto & Filtros (grep/awk/jq)", "url": "https://guineves.com.br/cheatsheets/#texto" },
+        { "@type": "ListItem", "position": 4, "name": "Diagnóstico de Rede", "url": "https://guineves.com.br/cheatsheets/#rede" },
+        { "@type": "ListItem", "position": 5, "name": "SSH & Túneis", "url": "https://guineves.com.br/cheatsheets/#ssh" },
+        { "@type": "ListItem", "position": 6, "name": "OpenSSL & Certificados TLS", "url": "https://guineves.com.br/cheatsheets/#openssl" },
+        { "@type": "ListItem", "position": 7, "name": "HTTP Status & Headers", "url": "https://guineves.com.br/cheatsheets/#http" },
+        { "@type": "ListItem", "position": 8, "name": "Git Essencial & Resgate", "url": "https://guineves.com.br/cheatsheets/#git" },
+        { "@type": "ListItem", "position": 9, "name": "Docker & Compose", "url": "https://guineves.com.br/cheatsheets/#docker" },
+        { "@type": "ListItem", "position": 10, "name": "Kubernetes (kubectl)", "url": "https://guineves.com.br/cheatsheets/#kubectl" },
+        { "@type": "ListItem", "position": 11, "name": "systemd & Journal", "url": "https://guineves.com.br/cheatsheets/#systemd" },
+        { "@type": "ListItem", "position": 12, "name": "Vim / Neovim", "url": "https://guineves.com.br/cheatsheets/#vim" },
+        { "@type": "ListItem", "position": 13, "name": "PostgreSQL (psql & SQL)", "url": "https://guineves.com.br/cheatsheets/#psql" },
+        { "@type": "ListItem", "position": 14, "name": "Regex Quick Reference", "url": "https://guineves.com.br/cheatsheets/#regex" }
+      ]
+    }
+  }
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📌</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- CSS Principal & Cheat Sheets -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="cheatsheets.css">
+
+  <script>
+    (function() {
+      function getTheme() {
+        const match = document.cookie.match(/(^|;)\s*site_theme=([^;]+)/);
+        if (match) return match[2];
+        try { return localStorage.getItem('theme'); } catch(e) {}
+        return null;
+      }
+      if (getTheme() === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="cs-header">
+    <div class="header-left">
+      <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Abrir índice de cheat sheets">
+        ☰ Índice
+      </button>
+      <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Recolher / expandir índice lateral (Atalho: Ctrl+B)" aria-label="Recolher ou expandir índice lateral">
+        <span class="sidebar-toggle-icon">◀</span>
+        <span class="sidebar-toggle-label">Índice</span>
+      </button>
+      <a href="/" class="logo">[guineves <span class="accent">~</span>]# cheatsheets<span class="cursor">_</span></a>
+      <a href="/" class="back-home">← Voltar ao site</a>
+      <a href="/canivete/" class="back-home">🛠️ Canivete</a>
+      <span class="offline-badge" title="Referência 100% local no navegador.">
+        <span class="pulse-dot"></span> 100% Offline / tldr
+      </span>
+      <button type="button" class="coffee-badge" id="pix-coffee-btn" title="Apoiar o projeto com um café via Pix">
+        <span class="coffee-icon">☕</span>
+        <span class="coffee-text">Pagar um café</span>
+      </button>
+    </div>
+    <div class="header-right">
+      <button type="button" class="theme-toggle" id="theme-btn" aria-label="Alternar tema dia/noite" title="Alternar tema">
+        <span class="theme-icon">☀️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- APP SHELL -->
+  <div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="cs-sidebar" id="cs-sidebar">
+      <div class="sidebar-search-row">
+        <div class="sidebar-search">
+          <input type="search" id="cs-search" placeholder="Buscar comando ou tema..." autocomplete="off">
+          <span class="kbd-hint">/</span>
+        </div>
+        <button type="button" class="sidebar-collapse-icon-btn" id="sidebar-collapse-icon-btn" title="Recolher índice lateral (Ctrl+B)" aria-label="Recolher índice lateral">
+          «
+        </button>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="category-pills" id="category-pills">
+        <button type="button" class="cat-pill active" data-cat="all">Todos</button>
+        <button type="button" class="cat-pill" data-cat="linux">Linux</button>
+        <button type="button" class="cat-pill" data-cat="net">Redes</button>
+        <button type="button" class="cat-pill" data-cat="devops">DevOps</button>
+        <button type="button" class="cat-pill" data-cat="data">Dados</button>
+      </div>
+
+      <!-- Categorized Index (rendered by JS) -->
+      <nav class="sidebar-groups" id="sidebar-groups">
+        <div class="category-group fav-group" id="pin-group" data-cat="pin">
+          <div class="category-title">
+            <span style="color:var(--amber);">📌 Fixados</span>
+            <span class="category-count" id="pin-count">0</span>
+          </div>
+          <div id="pin-list" class="pin-list"></div>
+        </div>
+        <div id="dynamic-nav-groups"></div>
+      </nav>
+    </aside>
+
+    <!-- MAIN BOARD STAGE -->
+    <main class="board-stage">
+      <div class="board-intro">
+        <div>
+          <h1>📌 Mural de Cheat Sheets <span class="tldr-tag">estilo tldr</span></h1>
+          <p class="board-subtitle">Clique em qualquer post-it (ou escolha no índice) para ampliar em foco e copiar comandos com 1 clique.</p>
+        </div>
+        <div class="board-stats" id="board-stats">14 post-its</div>
+      </div>
+
+      <div class="postits-grid" id="postits-grid"></div>
+
+      <noscript>
+        <section aria-label="Índice estático de Cheat Sheets">
+          <h2>Cheat Sheets disponíveis (habilite o JavaScript para busca, cópia rápida e post-its interativos)</h2>
+          <ul>
+            <li><strong>Bash &amp; Produtividade:</strong> atalhos (<code>Ctrl+R</code>, <code>sudo !!</code>), brace expansion (<code>cp arquivo{,.bak}</code>, <code>mv arquivo.log{,.$(date +%Y%m%d_%H%M%S)}</code>), parameter expansion e process substitution (<code>diff -u</code>).</li>
+            <li><strong>Processos &amp; Sistema:</strong> <code>ss -tulpn</code>, <code>lsof -i</code>, <code>ps aux --sort=-%mem</code>, <code>du -sh *</code>, <code>df -hT</code>, <code>lsblk -f</code>.</li>
+            <li><strong>Texto &amp; Filtros:</strong> <code>grep -rn</code>, <code>sort | uniq -c</code>, <code>awk</code>, <code>sed -i</code>, <code>jq</code>, <code>find ... | xargs</code>.</li>
+            <li><strong>Diagnóstico de Rede:</strong> <code>ip -c -br a</code>, <code>dig +short</code>, <code>curl -Ikv</code>, <code>mtr</code>, <code>tcpdump</code>.</li>
+            <li><strong>SSH &amp; Túneis:</strong> port forwarding (<code>ssh -L</code>, <code>ssh -R</code>, <code>ssh -D</code>), <code>ProxyJump (-J)</code>, <code>ssh-keygen -t ed25519</code>, <code>rsync -avzP</code>.</li>
+            <li><strong>OpenSSL &amp; Certificados TLS:</strong> <code>openssl s_client</code>, <code>openssl x509</code>, CSR, autoassinado e conversão PKCS#12 (<code>.pfx</code>).</li>
+            <li><strong>HTTP Status &amp; Headers:</strong> códigos 2xx, 3xx, 4xx, 5xx, HSTS, CSP, Cache-Control e CORS.</li>
+            <li><strong>Git Essencial &amp; Resgate:</strong> <code>git reset --soft</code>, <code>cherry-pick</code>, <code>rebase -i</code>, <code>reflog</code>, <code>stash</code>, <code>worktree</code>.</li>
+            <li><strong>Docker &amp; Compose:</strong> <code>docker ps</code>, <code>logs -f</code>, <code>exec -it</code>, <code>stats</code>, <code>compose up -d --build</code>, <code>system prune</code>.</li>
+            <li><strong>Kubernetes (kubectl):</strong> <code>get pods -A -o wide</code>, <code>describe</code>, <code>logs -f</code>, <code>exec -it</code>, <code>port-forward</code>, <code>rollout restart</code>.</li>
+            <li><strong>systemd &amp; Journal:</strong> <code>systemctl enable --now</code>, <code>daemon-reload</code>, <code>--failed</code>, <code>journalctl -u -f</code>, <code>--vacuum-size</code>.</li>
+            <li><strong>Vim / Neovim:</strong> navegação (<code>gg</code>/<code>G</code>), <code>ci"</code>/<code>ci(</code>, busca e substituição (<code>:%s</code>), splits (<code>:vsp</code>) e macros.</li>
+            <li><strong>PostgreSQL (psql &amp; SQL):</strong> <code>\dt</code>, <code>\d+</code>, <code>EXPLAIN (ANALYZE, BUFFERS)</code>, queries de sessões ativas, locks e tamanho de tabelas.</li>
+            <li><strong>Regex Quick Reference:</strong> âncoras, classes (<code>\d</code>, <code>\w</code>, <code>\s</code>), quantificadores lazy, grupos nomeados e lookarounds.</li>
+          </ul>
+        </section>
+      </noscript>
+
+      <div class="board-empty" id="board-empty" hidden>
+        Nenhum post-it encontrado para essa busca. Pressione <kbd>Esc</kbd> para limpar o filtro.
+      </div>
+    </main>
+  </div>
+
+  <!-- SPOTLIGHT MODAL (Post-it Ampliado) -->
+  <div class="spotlight-backdrop" id="spotlight-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="spotlight-title">
+    <div class="spotlight-card" id="spotlight-card">
+      <div class="spotlight-topbar">
+        <div class="spotlight-meta">
+          <span class="spotlight-cat-badge" id="spotlight-cat"></span>
+          <span class="spotlight-count" id="spotlight-count"></span>
+        </div>
+        <div class="spotlight-actions">
+          <button type="button" class="spotlight-action-btn" id="spotlight-pin-btn" title="Fixar / desafixar post-it">📌 Fixar</button>
+          <button type="button" class="spotlight-action-btn" id="spotlight-link-btn" title="Copiar link direto">🔗 Link</button>
+          <button type="button" class="spotlight-action-btn" id="spotlight-prev-btn" title="Anterior (←)">◀</button>
+          <button type="button" class="spotlight-action-btn" id="spotlight-next-btn" title="Próximo (→)">▶</button>
+          <button type="button" class="spotlight-close-btn" id="spotlight-close-btn" aria-label="Fechar destaque (Esc)">✕</button>
+        </div>
+      </div>
+      <div class="spotlight-header">
+        <h2 id="spotlight-title"></h2>
+        <p id="spotlight-desc"></p>
+      </div>
+      <div class="spotlight-entries" id="spotlight-entries"></div>
+    </div>
+  </div>
+
+  <!-- PIX COFFEE MODAL -->
+  <div class="pix-modal-backdrop" id="pix-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pix-modal-title">
+    <div class="pix-modal-card">
+      <button type="button" class="pix-modal-close" id="pix-modal-close" aria-label="Fechar janela">✕</button>
+      <div class="pix-modal-header">
+        <span class="pix-modal-icon">☕</span>
+        <h2 id="pix-modal-title">Pagar um café via Pix</h2>
+        <p class="pix-modal-subtitle">
+          Os Cheat Sheets e o Canivete Suíço são 100% gratuitos, sem anúncios e rodam localmente no seu navegador. Se ajudaram no seu dia, qualquer contribuição ajuda a manter o projeto!
+        </p>
+      </div>
+      <div class="pix-qr-box">
+        <img src="../canivete/pix-qr.svg" alt="QR Code Pix" width="188" height="188" class="pix-qr-img">
+      </div>
+      <div class="pix-copy-group">
+        <span class="pix-copy-label">Chave Pix (Aleatória)</span>
+        <div class="pix-copy-row">
+          <code class="pix-copy-value" id="pix-key-value">9ffc3caa-d11c-4bd2-b569-f56f8bb3177d</code>
+          <button type="button" class="pix-copy-btn pix-copy-btn-primary" data-copy-target="pix-key-value" data-copy-msg="Chave Pix copiada!">Copiar chave</button>
+        </div>
+      </div>
+      <div class="pix-copy-group">
+        <span class="pix-copy-label">Pix Copia e Cola</span>
+        <div class="pix-copy-row">
+          <code class="pix-copy-value pix-copy-value-truncate" id="pix-brcode-value">00020126580014br.gov.bcb.pix01369ffc3caa-d11c-4bd2-b569-f56f8bb3177d5204000053039865802BR5915GUILHERME NEVES6006BRASIL62070503***6304FA84</code>
+          <button type="button" class="pix-copy-btn" data-copy-target="pix-brcode-value" data-copy-msg="Código Pix Copia e Cola copiado!">Copiar código</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-notice" class="toast-notice" role="alert" aria-live="polite">Copiado! ✓</div>
+
+  <script src="cheatsheets.js"></script>
+</body>
+</html>

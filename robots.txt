@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://guineves.com.br/sitemap.xml
+# llms.txt: https://guineves.com.br/llms.txt
